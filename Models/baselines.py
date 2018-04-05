@@ -5,7 +5,7 @@ Baseline systems for Germeval 2018 Shared Task
 
 Input corpus file as command-line argument
 '''
-import sys
+import argparse
 import statistics as stats
 
 from sklearn.dummy import DummyClassifier
@@ -72,12 +72,21 @@ def evaluate(Ygold, Yguess):
 
 if __name__ == '__main__':
 
+    # Parse arguments
+    parser = argparse.ArgumentParser(description='Run models for either binary or multi-class task')
+    parser.add_argument('file', metavar='f', type=str, help='Path to data file')
+    parser.add_argument('--task', metavar='t', type=str, default='binary', help="'binary' for binary and 'multi' for multi-class task")
+    args = parser.parse_args()
+
     # Hyper-parameters for SVM:
     C_val = 1
     Kernel = 'linear'
 
     print('Reading in data...')
-    X,Y = read_corpus(sys.argv[1])
+    if args.task == 'binary':
+        X,Y = read_corpus(args.file)
+    else:
+        X,Y = read_corpus(args.file, binary=False)
 
     # Using 20% of the data as validation data
     split_point = int(0.8*len(X))
