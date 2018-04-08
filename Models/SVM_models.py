@@ -1,9 +1,5 @@
 '''
-Baseline systems for Germeval 2018 Shared Task
-1) Most freq. class
-2) Tfidf-weighted (word) unigram + linear SVM
-
-Input corpus file as command-line argument
+SVM systems for germeval
 '''
 import argparse
 import statistics as stats
