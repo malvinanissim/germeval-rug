@@ -39,7 +39,7 @@ def read_corpus(corpus_file, binary=True):
     return tweets, labels
 
 def cross_val(X, Y, clf, folds):
-    '''Customised cross_val with chosen classifier and vectorized input data (X)'''
+    '''Customised cross_val with chosen classifier and vectorized input data (X) and labels as numeric labels'''
 
     kf = KFold(n_splits=folds)
     # store eval metric scores for each fold to take average over them
@@ -184,7 +184,7 @@ if __name__ == '__main__':
     # Set up classifier
     clf = SVC(kernel=Kernel, C=C_val)
 
-    # 5-fold cross-validation with selection of metrics
+    # n-fold cross-validation with selection of metrics
     print('Training and cross-validating...')
     precision, recall, F1, F1_macro, Accuracy = cross_val(X, Y, clf, args.folds)
 
