@@ -2,13 +2,14 @@
 SVM systems for germeval
 '''
 import argparse
+import re
 import statistics as stats
 
 from sklearn.preprocessing import LabelEncoder
 from sklearn.model_selection import KFold, cross_validate
 from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
 from sklearn.svm import SVC
-from sklearn.pipeline import Pipeline
+from sklearn.pipeline import Pipeline, FeatureUnion
 
 from sklearn.metrics import accuracy_score
 from sklearn.metrics import confusion_matrix
@@ -170,16 +171,28 @@ if __name__ == '__main__':
     else:
         X,Y = read_corpus(args.file, binary=False)
 
+    # Minimal preprocessing: Removing line breaks
+    Data_X = []
+    for tw in X:
+        #tw = re.sub(r'@\S+','User', tw)
+        tw = re.sub(r'\s\|LBR\|', '', tw)
+        Data_X.append(tw)
+
+
     # Vectorizing data
     print('Vectorizing data...')
-    vectorizer = TfidfVectorizer()
-    X = vectorizer.fit_transform(X)
-    print('X_type after vec:', type(X), X.shape)
+    # unweighted word uni and bigrams
+    count_word = CountVectorizer(ngram_range=(1,2))
+    count_char = CountVectorizer(analyzer='char', ngram_range=(3,7))
+    vectorizer = FeatureUnion([('word', count_word),
+                                ('char', count_char)])
+    X = vectorizer.fit_transform(Data_X)
+    print(X.shape)
 
     # numerifying labels
     le = LabelEncoder()
     Y = le.fit_transform(Y)
-    print('Y_type after vec:', type(Y), Y.shape)
+    print(Y.shape)
 
     # Set up classifier
     clf = SVC(kernel=Kernel, C=C_val)

@@ -1,0 +1,149 @@
+Results for SVM with different model/feature settings, all evaluated with 5-fold cross-validation.
+All values shown below have been averaged across the 5 folds
+
+Baseline SVM (tfidf-weighted unigrams)
+
+BINARY
+--------------------------------------------------
+Precision, Recall and F-score per class, averaged across all folds:
+            Precision     Recall    F-score
+OFFENSE      0.732669   0.401290   0.518240
+OTHER        0.752580   0.925587   0.830130
+--------------------------------------------------
+Accuracy (across all folds): 0.74885533628
+--------------------------------------------------
+F-score (macro) (across all folds): 0.674185324097
+--------------------------------------------------
+
+MULTI-CLASS
+--------------------------------------------------
+Precision, Recall and F-score per class, averaged across all folds:
+            Precision     Recall    F-score
+ABUSE        0.742803   0.238904   0.360357
+INSULT       0.643213   0.082359   0.145834
+OTHER        0.709047   0.982527   0.823669
+PROFANITY    0.000000   0.000000   0.000000
+--------------------------------------------------
+Accuracy (across all folds): 0.709923609325
+--------------------------------------------------
+F-score (macro) (across all folds): 0.332464958046
+--------------------------------------------------
+
+****************************************************************************
+Baseline SVM + preprocessing (normalising usernames, removing line break char)
+
+BINARY
+--------------------------------------------------
+Precision, Recall and F-score per class, averaged across all folds:
+            Precision     Recall    F-score
+OFFENSE      0.732778   0.379318   0.499529
+OTHER        0.746605   0.929532   0.828047
+--------------------------------------------------
+Accuracy (across all folds): 0.744063321908
+--------------------------------------------------
+F-score (macro) (across all folds): 0.663788010791
+--------------------------------------------------
+
+MULTI-CLASS
+--------------------------------------------------
+Precision, Recall and F-score per class, averaged across all folds:
+            Precision     Recall    F-score
+ABUSE        0.719996   0.230952   0.348013
+INSULT       0.666888   0.090264   0.158957
+OTHER        0.707372   0.978901   0.821254
+PROFANITY    0.000000   0.000000   0.000000
+--------------------------------------------------
+Accuracy (across all folds): 0.706929597349
+--------------------------------------------------
+F-score (macro) (across all folds): 0.33205608229
+--------------------------------------------------
+
+*****************************************************************************
+Baseline SVM + simple preprocessing (only removing line break char)
+
+BINARY
+--------------------------------------------------
+Precision, Recall and F-score per class, averaged across all folds:
+            Precision     Recall    F-score
+OFFENSE      0.738769   0.394775   0.513992
+OTHER        0.751261   0.928905   0.830633
+--------------------------------------------------
+Accuracy (across all folds): 0.748856133886
+--------------------------------------------------
+F-score (macro) (across all folds): 0.672312776218
+--------------------------------------------------
+
+MULTI-CLASS
+--------------------------------------------------
+Precision, Recall and F-score per class, averaged across all folds:
+            Precision     Recall    F-score
+ABUSE        0.745455   0.238926   0.360816
+INSULT       0.648335   0.083795   0.148319
+OTHER        0.708752   0.982530   0.823465
+PROFANITY    0.000000   0.000000   0.000000
+--------------------------------------------------
+Accuracy (across all folds): 0.710123409525
+--------------------------------------------------
+F-score (macro) (across all folds): 0.333150005787
+--------------------------------------------------
+
+******************************************************************************
+SVM with CountVectorizer + simple preprocessing
+
+BINARY
+--------------------------------------------------
+Precision, Recall and F-score per class, averaged across all folds:
+            Precision     Recall    F-score
+OFFENSE      0.642489   0.534000   0.582408
+OTHER        0.782094   0.848807   0.813898
+--------------------------------------------------
+Accuracy (across all folds): 0.742666714523
+--------------------------------------------------
+F-score (macro) (across all folds): 0.698152550017
+--------------------------------------------------
+
+MULTI-CLASS
+--------------------------------------------------
+Precision, Recall and F-score per class, averaged across all folds:
+            Precision     Recall    F-score
+ABUSE        0.493641   0.440366   0.462937
+INSULT       0.392391   0.232686   0.290841
+OTHER        0.767807   0.863580   0.812763
+PROFANITY    0.200000   0.023529   0.042105
+--------------------------------------------------
+Accuracy (across all folds): 0.689960339062
+--------------------------------------------------
+F-score (macro) (across all folds): 0.402161677145
+--------------------------------------------------
+
+*******************************************************************************
+SVM + sp + word uni & bigrams + char n-grams in range (3,7) (all unweighted)
+
+BINARY
+--------------------------------------------------
+Precision, Recall and F-score per class, averaged across all folds:
+            Precision     Recall    F-score
+OFFENSE      0.700700   0.557446   0.620669
+OTHER        0.796196   0.878626   0.835339
+--------------------------------------------------
+Accuracy (across all folds): 0.770414814726
+--------------------------------------------------
+F-score (macro) (across all folds): 0.72800427501
+--------------------------------------------------
+
+MULTI-CLASS
+--------------------------------------------------
+Precision, Recall and F-score per class, averaged across all folds:
+            Precision     Recall    F-score
+ABUSE        0.592789   0.458940   0.516191
+INSULT       0.514370   0.220276   0.307678
+OTHER        0.772818   0.921712   0.840706
+PROFANITY    0.000000   0.000000   0.000000
+--------------------------------------------------
+Accuracy (across all folds): 0.730685681584
+--------------------------------------------------
+F-score (macro) (across all folds): 0.416143541157
+--------------------------------------------------
+
+
+
