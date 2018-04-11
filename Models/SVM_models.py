@@ -4,6 +4,7 @@ SVM systems for germeval
 import argparse
 import re
 import statistics as stats
+import stop_words
 
 from sklearn.preprocessing import LabelEncoder
 from sklearn.model_selection import KFold, cross_validate
@@ -182,7 +183,7 @@ if __name__ == '__main__':
     # Vectorizing data
     print('Vectorizing data...')
     # unweighted word uni and bigrams
-    count_word = CountVectorizer(ngram_range=(1,2))
+    count_word = CountVectorizer(ngram_range=(1,2), stop_words=stop_words.get_stop_words('de'))
     count_char = CountVectorizer(analyzer='char', ngram_range=(3,7))
     vectorizer = FeatureUnion([('word', count_word),
                                 ('char', count_char)])
@@ -194,8 +195,19 @@ if __name__ == '__main__':
     Y = le.fit_transform(Y)
     print(Y.shape)
 
-    # Set up classifier
-    clf = SVC(kernel=Kernel, C=C_val)
+    # Set up SVM classifier with unbalanced class weights
+    if args.task.lower() == 'binary':
+        # le.transform() takes an array-like object and returns a np.array
+        # cl_weights_binary = None
+        cl_weights_binary = {le.transform(['OTHER'])[0]:1, le.transform(['OFFENSE'])[0]:3}
+        clf = SVC(kernel=Kernel, C=C_val, class_weight=cl_weights_binary)
+    else:
+        # cl_weights_multi = None
+        cl_weights_multi = {le.transform(['OTHER'])[0]:0.5,
+                            le.transform(['ABUSE'])[0]:3,
+                            le.transform(['INSULT'])[0]:3,
+                            le.transform(['PROFANITY'])[0]:4}
+        clf = SVC(kernel=Kernel, C=C_val, class_weight=cl_weights_multi)
 
     # n-fold cross-validation with selection of metrics
     print('Training and cross-validating...')

@@ -145,5 +145,102 @@ Accuracy (across all folds): 0.730685681584
 F-score (macro) (across all folds): 0.416143541157
 --------------------------------------------------
 
+*******************************************************************************
+Class-weighted SVM + sp + word uni & bigrams + char n-grams in range (3,7)
+
+BINARY
+
+class weights: OTHER: 1, OFFENSE: 3
+--------------------------------------------------
+Precision, Recall and F-score per class, averaged across all folds:
+            Precision     Recall    F-score
+OFFENSE      0.700700   0.557446   0.620669
+OTHER        0.796196   0.878626   0.835339
+--------------------------------------------------
+Accuracy (across all folds): 0.770414814726
+--------------------------------------------------
+F-score (macro) (across all folds): 0.72800427501
+--------------------------------------------------
+
+
+MULTI-CLASS
+
+class weights: OTHER: 0.5, ABUSE: 3, INSULT: 3, PROFANITY: 4
+--------------------------------------------------
+Precision, Recall and F-score per class, averaged across all folds:
+            Precision     Recall    F-score
+ABUSE        0.592789   0.458940   0.516191
+INSULT       0.514370   0.220276   0.307678
+OTHER        0.772818   0.921712   0.840706
+PROFANITY    0.000000   0.000000   0.000000
+--------------------------------------------------
+Accuracy (across all folds): 0.730685681584
+--------------------------------------------------
+F-score (macro) (across all folds): 0.416143541157
+--------------------------------------------------
+
+********************************************************************************
+s. above + binary setting CountVectorizer
+
+BINARY
+
+--------------------------------------------------
+Precision, Recall and F-score per class, averaged across all folds:
+            Precision     Recall    F-score
+OFFENSE      0.701290   0.560377   0.622757
+OTHER        0.797210   0.878320   0.835764
+--------------------------------------------------
+Accuracy (across all folds): 0.771212021511
+--------------------------------------------------
+F-score (macro) (across all folds): 0.729260585114
+--------------------------------------------------
+
+MULTI-CLASS
+
+--------------------------------------------------
+Precision, Recall and F-score per class, averaged across all folds:
+            Precision     Recall    F-score
+ABUSE        0.610083   0.445804   0.514308
+INSULT       0.521264   0.218558   0.306704
+OTHER        0.767915   0.927425   0.840157
+PROFANITY    0.000000   0.000000   0.000000
+--------------------------------------------------
+Accuracy (across all folds): 0.731682289766
+--------------------------------------------------
+F-score (macro) (across all folds): 0.415292414957
+--------------------------------------------------
+
+*******************************************************************************
+s. above + non-binary setting vectorizer + German stop word list
+
+BINARY
+--------------------------------------------------
+Precision, Recall and F-score per class, averaged across all folds:
+            Precision     Recall    F-score
+OFFENSE      0.700225   0.560459   0.622364
+OTHER        0.797119   0.877727   0.835439
+--------------------------------------------------
+Accuracy (across all folds): 0.770814215724
+--------------------------------------------------
+F-score (macro) (across all folds): 0.728901598887
+--------------------------------------------------
+
+MULTI-CLASS
+--------------------------------------------------
+Precision, Recall and F-score per class, averaged across all folds:
+            Precision     Recall    F-score
+ABUSE        0.594912   0.462870   0.519519
+INSULT       0.519303   0.225187   0.313449
+OTHER        0.773421   0.920812   0.840687
+PROFANITY    0.000000   0.000000   0.000000
+--------------------------------------------------
+Accuracy (across all folds): 0.731483685975
+--------------------------------------------------
+F-score (macro) (across all folds): 0.418413843624
+--------------------------------------------------
+
+
+
+
 
 
