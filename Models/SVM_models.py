@@ -5,7 +5,10 @@ import argparse
 import re
 import statistics as stats
 import stop_words
+import json
 
+# from features import get_embeddings
+from sklearn.base import TransformerMixin
 from sklearn.preprocessing import LabelEncoder
 from sklearn.model_selection import KFold, cross_validate
 from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
@@ -15,6 +18,45 @@ from sklearn.pipeline import Pipeline, FeatureUnion
 from sklearn.metrics import accuracy_score
 from sklearn.metrics import confusion_matrix
 from sklearn.metrics import precision_recall_fscore_support
+
+
+class Embeddings(TransformerMixin):
+    '''Transformer object turning a sentence (or tweet) into a single embedding vector'''
+
+    def __init__(self, word_embeds):
+        ''' Required input: word embeddings stored in dict structure available for look-up '''
+        self.word_embeds = word_embeds
+
+    def transform(self, X, **transform_params):
+        '''
+        Transformation function: X is list of sentence/tweet - strings in the train data. Returns list of embeddings, each embedding representing one tweet
+        '''
+        return [self.get_sent_embedding(sent, self.word_embeds) for sent in X]
+
+    def fit(self, X, y=None, **fit_params):
+        return self
+
+    def get_sent_embedding(self, sentence, word_embeds):
+        '''
+        Obtains sentence embedding representing a whole sentence / tweet
+        '''
+        # simply get dim of embeddings
+        l_vector = len(word_embeds[':'])
+
+        # replace each word in sentence with its embedding representation via look up in the embedding dict strcuture
+        # if no word_embedding available for a word, just ignore the word
+        # [[0.234234,-0.276583...][0.2343, -0.7356354, 0.123 ...][0.2344356, 0.12477...]...]
+        list_of_embeddings = [word_embeds[word.lower()] for word in sentence.split() if word.lower() in word_embeds]
+
+	    # Obtain sentence embeddings either by average or max pooling on word embeddings of the sentence
+        sent_embedding = [sum(col) / float(len(col)) for col in zip(*list_of_embeddings)]  # average pooling
+        # sent_embedding = [max(col) for col in zip(*list_of_embeddings)]	# max pooling
+
+        # Below case should technically not occur
+        if len(sent_embedding) != l_vector:
+            sent_embedding = [0] * l_vector
+        return sent_embedding
+
 
 
 def read_corpus(corpus_file, binary=True):
@@ -158,7 +200,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Run models for either binary or multi-class task')
     parser.add_argument('file', metavar='f', type=str, help='Path to data file')
     parser.add_argument('--task', metavar='t', type=str, default='binary', help="'binary' for binary and 'multi' for multi-class task")
-    parser.add_argument('--folds', metavar='nf', type=int, default=5, help='Number of folds for cross-validation')
+    parser.add_argument('--folds', metavar='nf', type=int, default=4, help='Number of folds for cross-validation')
     args = parser.parse_args()
 
     #### Hyper-parameters:
@@ -175,25 +217,35 @@ if __name__ == '__main__':
     # Minimal preprocessing: Removing line breaks
     Data_X = []
     for tw in X:
-        #tw = re.sub(r'@\S+','User', tw)
-        tw = re.sub(r'\s\|LBR\|', '', tw)
+        tw = re.sub(r'@\S+','User', tw)
+        tw = re.sub(r'\|LBR\|', '', tw)
+        tw = re.sub(r'#', '', tw)
         Data_X.append(tw)
 
 
-    # Vectorizing data
+    # Vectorizing data / Extracting features
     print('Vectorizing data...')
+
     # unweighted word uni and bigrams
     count_word = CountVectorizer(ngram_range=(1,2), stop_words=stop_words.get_stop_words('de'))
     count_char = CountVectorizer(analyzer='char', ngram_range=(3,7))
+
+    # Getting twitter embeddings
+    path_to_embs = '../Resources/twitter_embeddings_de_52D.json'
+    print('Getting pretrained word embeddings from {}...'.format(path_to_embs))
+    embeddings = json.load(open(path_to_embs, 'r'))
+    print('Done')
+
     vectorizer = FeatureUnion([('word', count_word),
-                                ('char', count_char)])
+                                ('char', count_char),
+                                ('word_embeds', Embeddings(embeddings))])
     X = vectorizer.fit_transform(Data_X)
-    print(X.shape)
+    print('Shape of X after vectorizing: ', X.shape)
 
     # numerifying labels
     le = LabelEncoder()
     Y = le.fit_transform(Y)
-    print(Y.shape)
+    print('Shape of Y: ', Y.shape)
 
     # Set up SVM classifier with unbalanced class weights
     if args.task.lower() == 'binary':
