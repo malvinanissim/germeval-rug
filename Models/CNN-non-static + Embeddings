@@ -1,0 +1,31 @@
+Classifier: CNN-non-static, 300 Hidden Dims; Feature: Woerd Embeddings, 300D
+
+
+BINARY
+
+
+Train on 4508 samples, validate on 501 samples
+Epoch 1/10
+ - 20s - loss: 0.6468 - acc: 0.6582 - val_loss: 0.6446 - val_acc: 0.6527
+Epoch 2/10
+ - 18s - loss: 0.6348 - acc: 0.6637 - val_loss: 0.6438 - val_acc: 0.6527
+Epoch 3/10
+ - 21s - loss: 0.6191 - acc: 0.6630 - val_loss: 0.6269 - val_acc: 0.6527
+Epoch 4/10
+ - 20s - loss: 0.5820 - acc: 0.6739 - val_loss: 0.6193 - val_acc: 0.6487
+Epoch 5/10
+ - 19s - loss: 0.5066 - acc: 0.7427 - val_loss: 0.6054 - val_acc: 0.6627
+Epoch 6/10
+ - 18s - loss: 0.4478 - acc: 0.7870 - val_loss: 0.6315 - val_acc: 0.6527
+Epoch 7/10
+ - 19s - loss: 0.3775 - acc: 0.8221 - val_loss: 0.6623 - val_acc: 0.6467
+Epoch 8/10
+ - 18s - loss: 0.3226 - acc: 0.8600 - val_loss: 0.7243 - val_acc: 0.6188
+Epoch 9/10
+ - 18s - loss: 0.2705 - acc: 0.8904 - val_loss: 0.8454 - val_acc: 0.6347
+Epoch 10/10
+ - 19s - loss: 0.2355 - acc: 0.9042 - val_loss: 0.8973 - val_acc: 0.6527
+501/501 [==============================] - 0s 668us/step
+
+Test score: 0.8972791824750082
+Test accuracy: 0.6526946133958127
