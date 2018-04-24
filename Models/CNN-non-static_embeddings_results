@@ -1,0 +1,105 @@
+Classifier: CNN-non-static, 300 Hidden Dims; Feature: Wiki Word Embedding, 300D
+
+
+
+BINARY
+
+Train on 4508 samples, validate on 501 samples
+Epoch 1/10
+ - 15s - loss: 0.6660 - acc: 0.6420 - val_loss: 0.6574 - val_acc: 0.6527
+Epoch 2/10
+ - 15s - loss: 0.6417 - acc: 0.6617 - val_loss: 0.6517 - val_acc: 0.6567
+Epoch 3/10
+ - 15s - loss: 0.6349 - acc: 0.6624 - val_loss: 0.6428 - val_acc: 0.6587
+Epoch 4/10
+ - 16s - loss: 0.6165 - acc: 0.6724 - val_loss: 0.6282 - val_acc: 0.6687
+Epoch 5/10
+ - 15s - loss: 0.5915 - acc: 0.6868 - val_loss: 0.6065 - val_acc: 0.6866
+Epoch 6/10
+ - 16s - loss: 0.5538 - acc: 0.7112 - val_loss: 0.5905 - val_acc: 0.7006
+Epoch 7/10
+ - 19s - loss: 0.5123 - acc: 0.7498 - val_loss: 0.5772 - val_acc: 0.6986
+Epoch 8/10
+ - 19s - loss: 0.4491 - acc: 0.7859 - val_loss: 0.5772 - val_acc: 0.6926
+Epoch 9/10
+ - 18s - loss: 0.3894 - acc: 0.8212 - val_loss: 0.5669 - val_acc: 0.6886
+Epoch 10/10
+ - 18s - loss: 0.3281 - acc: 0.8534 - val_loss: 0.5772 - val_acc: 0.7006
+501/501 [==============================] - 0s 625us/step
+
+Test score: 0.57721479472
+Test accuracy: 0.700598801919
+
+
+
+
+
+Classifier: CNN-non-static, 300 Hidden Dims; Feature: Tweet Word Embedding, 200D
+
+
+
+BINARY
+
+
+Train on 4508 samples, validate on 501 samples
+Epoch 1/10
+ - 11s - loss: 0.6592 - acc: 0.6495 - val_loss: 0.6698 - val_acc: 0.6527
+Epoch 2/10
+ - 10s - loss: 0.6480 - acc: 0.6586 - val_loss: 0.6577 - val_acc: 0.6527
+Epoch 3/10
+ - 12s - loss: 0.6414 - acc: 0.6646 - val_loss: 0.6475 - val_acc: 0.6527
+Epoch 4/10
+ - 11s - loss: 0.6265 - acc: 0.6653 - val_loss: 0.6437 - val_acc: 0.6527
+Epoch 5/10
+ - 10s - loss: 0.6181 - acc: 0.6673 - val_loss: 0.6256 - val_acc: 0.6527
+Epoch 6/10
+ - 10s - loss: 0.6090 - acc: 0.6602 - val_loss: 0.6314 - val_acc: 0.6527
+Epoch 7/10
+ - 10s - loss: 0.5783 - acc: 0.6861 - val_loss: 0.6021 - val_acc: 0.6866
+Epoch 8/10
+ - 11s - loss: 0.5571 - acc: 0.7032 - val_loss: 0.5839 - val_acc: 0.6786
+Epoch 9/10
+ - 11s - loss: 0.5163 - acc: 0.7258 - val_loss: 0.5625 - val_acc: 0.6986
+Epoch 10/10
+ - 11s - loss: 0.4791 - acc: 0.7538 - val_loss: 0.5463 - val_acc: 0.7066
+501/501 [==============================] - 0s 336us/step
+
+Test score: 0.546265855402
+Test accuracy: 0.706586825871
+
+
+
+
+
+Classifier: CNN-non-static, 300 Hidden Dims; Feature: Trained Word Embedding, 300D
+
+
+
+BINARY
+
+
+Train on 4508 samples, validate on 501 samples
+Epoch 1/10
+ - 20s - loss: 0.6468 - acc: 0.6582 - val_loss: 0.6446 - val_acc: 0.6527
+Epoch 2/10
+ - 18s - loss: 0.6348 - acc: 0.6637 - val_loss: 0.6438 - val_acc: 0.6527
+Epoch 3/10
+ - 21s - loss: 0.6191 - acc: 0.6630 - val_loss: 0.6269 - val_acc: 0.6527
+Epoch 4/10
+ - 20s - loss: 0.5820 - acc: 0.6739 - val_loss: 0.6193 - val_acc: 0.6487
+Epoch 5/10
+ - 19s - loss: 0.5066 - acc: 0.7427 - val_loss: 0.6054 - val_acc: 0.6627
+Epoch 6/10
+ - 18s - loss: 0.4478 - acc: 0.7870 - val_loss: 0.6315 - val_acc: 0.6527
+Epoch 7/10
+ - 19s - loss: 0.3775 - acc: 0.8221 - val_loss: 0.6623 - val_acc: 0.6467
+Epoch 8/10
+ - 18s - loss: 0.3226 - acc: 0.8600 - val_loss: 0.7243 - val_acc: 0.6188
+Epoch 9/10
+ - 18s - loss: 0.2705 - acc: 0.8904 - val_loss: 0.8454 - val_acc: 0.6347
+Epoch 10/10
+ - 19s - loss: 0.2355 - acc: 0.9042 - val_loss: 0.8973 - val_acc: 0.6527
+501/501 [==============================] - 0s 668us/step
+
+Test score: 0.8972791824750082
+Test accuracy: 0.6526946133958127
