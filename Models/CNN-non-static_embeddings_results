@@ -1,3 +1,36 @@
+
+Classifier: CNN-non-static, 300 Hidden Dims; Feature: Wiki Word Embedding, 200D
+
+Train on 4508 samples, validate on 501 samples
+Epoch 1/10
+ - 10s - loss: 0.6512 - acc: 0.6566 - val_loss: 0.6549 - val_acc: 0.6527
+Epoch 2/10
+ - 10s - loss: 0.6357 - acc: 0.6626 - val_loss: 0.6400 - val_acc: 0.6527
+Epoch 3/10
+ - 11s - loss: 0.6124 - acc: 0.6701 - val_loss: 0.6183 - val_acc: 0.6627
+Epoch 4/10
+ - 10s - loss: 0.5208 - acc: 0.7471 - val_loss: 0.5868 - val_acc: 0.7126
+Epoch 5/10
+ - 11s - loss: 0.4009 - acc: 0.8185 - val_loss: 0.6196 - val_acc: 0.7066
+Epoch 6/10
+ - 11s - loss: 0.3092 - acc: 0.8680 - val_loss: 0.6403 - val_acc: 0.6986
+Epoch 7/10
+ - 12s - loss: 0.2027 - acc: 0.9208 - val_loss: 0.7866 - val_acc: 0.7026
+Epoch 8/10
+ - 10s - loss: 0.1635 - acc: 0.9401 - val_loss: 0.8129 - val_acc: 0.7066
+Epoch 9/10
+ - 11s - loss: 0.1444 - acc: 0.9443 - val_loss: 0.8410 - val_acc: 0.7086
+Epoch 10/10
+ - 11s - loss: 0.1062 - acc: 0.9647 - val_loss: 0.9295 - val_acc: 0.7086
+501/501 [==============================] - 0s 403us/step
+
+Test score: 0.929474515948
+Test accuracy: 0.708582837068
+
+
+
+
+
 Classifier: CNN-non-static, 300 Hidden Dims; Feature: Wiki Word Embedding, 300D
 
 
