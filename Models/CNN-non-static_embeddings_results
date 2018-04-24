@@ -1,6 +1,9 @@
 
 Classifier: CNN-non-static, 300 Hidden Dims; Feature: Wiki Word Embedding, 200D
 
+
+BINARY
+
 Train on 4508 samples, validate on 501 samples
 Epoch 1/10
  - 10s - loss: 0.6512 - acc: 0.6566 - val_loss: 0.6549 - val_acc: 0.6527
@@ -32,7 +35,6 @@ Test accuracy: 0.708582837068
 
 
 Classifier: CNN-non-static, 300 Hidden Dims; Feature: Wiki Word Embedding, 300D
-
 
 
 BINARY
@@ -70,9 +72,7 @@ Test accuracy: 0.700598801919
 Classifier: CNN-non-static, 300 Hidden Dims; Feature: Tweet Word Embedding, 200D
 
 
-
 BINARY
-
 
 Train on 4508 samples, validate on 501 samples
 Epoch 1/10
@@ -107,9 +107,7 @@ Test accuracy: 0.706586825871
 Classifier: CNN-non-static, 300 Hidden Dims; Feature: Trained Word Embedding, 300D
 
 
-
 BINARY
-
 
 Train on 4508 samples, validate on 501 samples
 Epoch 1/10
