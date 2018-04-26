@@ -1,0 +1,79 @@
+
+####### Tuning parameters based on accuracy #######
+
+Best params on dev set (0.8 of data)
+
+{'C': 1, 'kernel': 'linear'}
+
+Grid scores on dev set:
+
+0.764 with {'C': 1, 'kernel': 'linear'}
+0.338 with {'C': 1, 'kernel': 'poly'}
+0.764 with {'C': 10, 'kernel': 'linear'}
+0.338 with {'C': 10, 'kernel': 'poly'}
+0.764 with {'C': 100, 'kernel': 'linear'}
+0.338 with {'C': 100, 'kernel': 'poly'}
+0.764 with {'C': 1000, 'kernel': 'linear'}
+0.338 with {'C': 1000, 'kernel': 'poly'}
+0.662 with {'C': 1, 'gamma': 0.01, 'kernel': 'rbf'}
+0.751 with {'C': 1, 'gamma': 0.001, 'kernel': 'rbf'}
+0.366 with {'C': 1, 'gamma': 0.0001, 'kernel': 'rbf'}
+0.662 with {'C': 10, 'gamma': 0.01, 'kernel': 'rbf'}
+0.752 with {'C': 10, 'gamma': 0.001, 'kernel': 'rbf'}
+0.762 with {'C': 10, 'gamma': 0.0001, 'kernel': 'rbf'}
+0.662 with {'C': 100, 'gamma': 0.01, 'kernel': 'rbf'}
+0.752 with {'C': 100, 'gamma': 0.001, 'kernel': 'rbf'}
+0.761 with {'C': 100, 'gamma': 0.0001, 'kernel': 'rbf'}
+0.662 with {'C': 1000, 'gamma': 0.01, 'kernel': 'rbf'}
+0.752 with {'C': 1000, 'gamma': 0.001, 'kernel': 'rbf'}
+0.761 with {'C': 1000, 'gamma': 0.0001, 'kernel': 'rbf'}
+
+Results on val set (0.2 of data) using best params found
+
+             precision    recall  f1-score   support
+
+    OFFENSE       0.68      0.57      0.62       335
+      OTHER       0.80      0.87      0.83       667
+
+avg / total       0.76      0.77      0.76      1002
+
+
+####### Tuning parameters based on f1_macro #######
+
+Best params on dev set (0.8 of data)
+
+{'C': 10, 'gamma': 0.0001, 'kernel': 'rbf'}
+
+Grid scores on dev set:
+
+0.719 with {'C': 1, 'kernel': 'linear'}
+0.252 with {'C': 1, 'kernel': 'poly'}
+0.719 with {'C': 10, 'kernel': 'linear'}
+0.252 with {'C': 10, 'kernel': 'poly'}
+0.719 with {'C': 100, 'kernel': 'linear'}
+0.252 with {'C': 100, 'kernel': 'poly'}
+0.719 with {'C': 1000, 'kernel': 'linear'}
+0.252 with {'C': 1000, 'kernel': 'poly'}
+0.399 with {'C': 1, 'gamma': 0.01, 'kernel': 'rbf'}
+0.711 with {'C': 1, 'gamma': 0.001, 'kernel': 'rbf'}
+0.304 with {'C': 1, 'gamma': 0.0001, 'kernel': 'rbf'}
+0.399 with {'C': 10, 'gamma': 0.01, 'kernel': 'rbf'}
+0.686 with {'C': 10, 'gamma': 0.001, 'kernel': 'rbf'}
+0.727 with {'C': 10, 'gamma': 0.0001, 'kernel': 'rbf'}
+0.399 with {'C': 100, 'gamma': 0.01, 'kernel': 'rbf'}
+0.687 with {'C': 100, 'gamma': 0.001, 'kernel': 'rbf'}
+0.714 with {'C': 100, 'gamma': 0.0001, 'kernel': 'rbf'}
+0.399 with {'C': 1000, 'gamma': 0.01, 'kernel': 'rbf'}
+0.687 with {'C': 1000, 'gamma': 0.001, 'kernel': 'rbf'}
+0.714 with {'C': 1000, 'gamma': 0.0001, 'kernel': 'rbf'}
+
+Results on val set (0.2 of data) using best params found
+
+             precision    recall  f1-score   support
+
+    OFFENSE       0.66      0.62      0.64       335
+      OTHER       0.81      0.84      0.83       667
+
+avg / total       0.76      0.76      0.76      1002
+
+

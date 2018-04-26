@@ -1,0 +1,34 @@
+Class-weighted SVM + minimal preprocessing + word uni & bigrams
++ char n-grams in range (3,7) + stop-word list + 52D De Twitter embeddings
+
+BINARY
+
+class weights: OTHER: 1, OFFENSE: 3
+--------------------------------------------------
+Precision, Recall and F-score per class, averaged across all folds:
+            Precision     Recall    F-score
+OFFENSE      0.712500   0.580006   0.639276
+OTHER        0.805026   0.881041   0.841285
+--------------------------------------------------
+Accuracy (across all folds): 0.7795974484597239
+--------------------------------------------------
+F-score (macro) (across all folds): 0.7402802727522606
+--------------------------------------------------
+
+MULTI
+
+class weights: OTHER: 0.5, ABUSE: 3, INSULT: 3, PROFANITY: 4
+--------------------------------------------------
+Precision, Recall and F-score per class, averaged across all folds:
+            Precision     Recall    F-score
+ABUSE        0.596599   0.469145   0.523172
+INSULT       0.512395   0.233589   0.320315
+OTHER        0.776396   0.918373   0.841371
+PROFANITY    0.000000   0.000000   0.000000
+--------------------------------------------------
+Accuracy (across all folds): 0.7320822889685165
+--------------------------------------------------
+F-score (macro) (across all folds): 0.4212146188227062
+--------------------------------------------------
+
+
