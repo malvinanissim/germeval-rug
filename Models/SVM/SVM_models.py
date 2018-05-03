@@ -12,7 +12,7 @@ from sklearn.base import TransformerMixin
 from sklearn.preprocessing import LabelEncoder
 from sklearn.model_selection import KFold, cross_validate
 from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
-from sklearn.svm import SVC
+from sklearn.svm import LinearSVC
 from sklearn.pipeline import Pipeline, FeatureUnion
 
 from sklearn.metrics import accuracy_score
@@ -205,8 +205,8 @@ if __name__ == '__main__':
 
     #### Hyper-parameters:
     # SVM
-    C_val = 1
-    Kernel = 'linear'
+    # C_val = 1
+    # Kernel = 'linear'
 
     print('Reading in data...')
     if args.task.lower() == 'binary':
@@ -252,14 +252,14 @@ if __name__ == '__main__':
         # le.transform() takes an array-like object and returns a np.array
         # cl_weights_binary = None
         cl_weights_binary = {le.transform(['OTHER'])[0]:1, le.transform(['OFFENSE'])[0]:3}
-        clf = SVC(kernel=Kernel, C=C_val, class_weight=cl_weights_binary)
+        clf = LinearSVC(class_weight=cl_weights_binary)
     else:
         # cl_weights_multi = None
         cl_weights_multi = {le.transform(['OTHER'])[0]:0.5,
                             le.transform(['ABUSE'])[0]:3,
                             le.transform(['INSULT'])[0]:3,
                             le.transform(['PROFANITY'])[0]:4}
-        clf = SVC(kernel=Kernel, C=C_val, class_weight=cl_weights_multi)
+        clf = LinearSVC(class_weight=cl_weights_multi)
 
     # n-fold cross-validation with selection of metrics
     print('Training and cross-validating...')
