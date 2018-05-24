@@ -1,0 +1,17 @@
+Coverage Wiki embeddings
+
+16755 unique tokens in training data
+Vocab size of embeddings: 3405340
+Coverage of wiki_embeddings_de_52D.json:
+Words in embeddings: 13573, 0.81 of total training data
+Words not in embeddings (OOV): 3182, 0.19 of total training data
+
+
+Coverage Twitter embeddings
+
+16755 unique tokens in training data
+Vocab size of embeddings: 4495608
+Coverage of twitter_embeddings_de_52D.json:
+Words in embeddings: 11635, 0.69 of total training data
+Words not in embeddings (OOV): 5120, 0.31 of total training data
+
