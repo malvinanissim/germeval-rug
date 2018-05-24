@@ -31,4 +31,43 @@ Accuracy (across all folds): 0.7320822889685165
 F-score (macro) (across all folds): 0.4212146188227062
 --------------------------------------------------
 
+########################################################################
+
+Class-weighted SVM + minimal preprocessing + word uni & bigrams
++ char n-grams in range (3,7) + stop-word list
+ + sentence embeddings (average pooling) from 52D De Twitter embeddings AND
+52D De wiki embeddings (concatenated via FeatureUnion)
+
+BINARY
+
+class weights: OTHER: 1, OFFENSE: 3
+--------------------------------------------------
+Precision, Recall and F-score per class, averaged across all folds:
+            Precision     Recall    F-score
+OFFENSE      0.711444   0.578000   0.637612
+OTHER        0.804408   0.881062   0.840955
+--------------------------------------------------
+Accuracy (across all folds): 0.7789971799311046
+--------------------------------------------------
+F-score (macro) (across all folds): 0.7392833923186124
+--------------------------------------------------
+
+MULTI
+
+class weights: OTHER: 0.5, ABUSE: 3, INSULT: 3, PROFANITY: 4
+--------------------------------------------------
+Precision, Recall and F-score per class, averaged across all folds:
+            Precision     Recall    F-score
+ABUSE        0.571737   0.447518   0.500467
+INSULT       0.493953   0.230516   0.313035
+OTHER        0.774450   0.915660   0.839107
+PROFANITY    0.500000   0.029762   0.056061
+--------------------------------------------------
+Accuracy (across all folds): 0.7260925217178452
+--------------------------------------------------
+F-score (macro) (across all folds): 0.4271674820542936
+--------------------------------------------------
+
+
+
 
