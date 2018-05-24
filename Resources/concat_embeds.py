@@ -2,6 +2,7 @@
 This is meant to concatenate two sets of embeddings
 Embedding 1 can be json-loaded to dictionary structure
 Embedding 2 is a gensim model
+Padding used for vocabulary that's in one but not the other embeddings
 '''
 from collections import defaultdict
 
