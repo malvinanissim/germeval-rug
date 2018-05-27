@@ -68,6 +68,83 @@ Accuracy (across all folds): 0.7260925217178452
 F-score (macro) (across all folds): 0.4271674820542936
 --------------------------------------------------
 
+##########################################################################
+
+Class-weighted SVM + minimal preprocessing + word uni & bigrams
++ char n-grams in range (3,7) + stop-word list
+ + sentence embeddings (average pooling) from 52D De wiki embeddings (no Twitter)
+
+BINARY
+
+class weights: OTHER: 1, OFFENSE: 3
+--------------------------------------------------
+Precision, Recall and F-score per class, averaged across all folds:
+            Precision     Recall    F-score
+OFFENSE      0.710225   0.579399   0.638007
+OTHER        0.804581   0.879839   0.840497
+--------------------------------------------------
+Accuracy (across all folds): 0.778599245066311
+--------------------------------------------------
+F-score (macro) (across all folds): 0.7392519047548326
+--------------------------------------------------
+
+MULTI
+
+class weights: OTHER: 0.5, ABUSE: 3, INSULT: 3, PROFANITY: 4
+--------------------------------------------------
+Precision, Recall and F-score per class, averaged across all folds:
+            Precision     Recall    F-score
+ABUSE        0.590919   0.464148   0.517933
+INSULT       0.513856   0.233589   0.320640
+OTHER        0.774966   0.917169   0.840028
+PROFANITY    0.000000   0.000000   0.000000
+--------------------------------------------------
+Accuracy (across all folds): 0.7302850841772998
+--------------------------------------------------
+F-score (macro) (across all folds): 0.4196503309782862
+--------------------------------------------------
+
+
+##########################################################################
+
+Class-weighted SVM + minimal preprocessing + word uni & bigrams
++ char n-grams in range (3,7) + stop-word list
+ + sentence embeddings (average pooling) from 52D combined and PCA-ed
+embeddings from wiki + hate
+
+BINARY
+
+--------------------------------------------------
+Precision, Recall and F-score per class, averaged across all folds:
+            Precision     Recall    F-score
+OFFENSE      0.709145   0.580623   0.638383
+OTHER        0.804823   0.878921   0.840223
+--------------------------------------------------
+Accuracy (across all folds): 0.7783996442679078
+--------------------------------------------------
+F-score (macro) (across all folds): 0.7393030022094458
+--------------------------------------------------
+
+
+MULTI
+
+class weights: OTHER: 0.5, ABUSE: 3, INSULT: 3, PROFANITY: 4
+--------------------------------------------------
+Precision, Recall and F-score per class, averaged across all folds:
+            Precision     Recall    F-score
+ABUSE        0.590480   0.472398   0.522418
+INSULT       0.514206   0.235065   0.321520
+OTHER        0.778616   0.917462   0.842279
+PROFANITY    0.000000   0.000000   0.000000
+--------------------------------------------------
+Accuracy (across all folds): 0.7322820891683167
+--------------------------------------------------
+F-score (macro) (across all folds): 0.42155419716319487
+--------------------------------------------------
+
+
+
+
 
 
 

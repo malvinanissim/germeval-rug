@@ -15,3 +15,11 @@ Coverage of twitter_embeddings_de_52D.json:
 Words in embeddings: 11635, 0.69 of total training data
 Words not in embeddings (OOV): 5120, 0.31 of total training data
 
+
+Coverage Hate embeddings (Facebook posts)
+
+16755 unique tokens in training data
+Vocab size of embeddings: 313314
+Coverage of hate_german.bin:
+Words in embeddings: 13468, 0.8 of total training data
+Words not in embeddings (OOV): 3287, 0.2 of total training data
