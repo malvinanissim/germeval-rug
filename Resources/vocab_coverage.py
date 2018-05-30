@@ -1,10 +1,11 @@
 import sys
 import re
 import json
+import pickle
 import gensim.models as gm
 from nltk.tokenize import word_tokenize
 
-with open('../Data/germeval2018.training.txt', 'r', encoding='utf-8') as fi:
+with open('germeval2018.training.txt', 'r', encoding='utf-8') as fi:
     content = [line.strip().split('\t')[0] for line in fi]
 # print(content[:5])
 
@@ -17,17 +18,22 @@ for tw in content:
     vocab.update([ token.lower() for token in word_tokenize(tw)])
 
 print('{} unique tokens in training data'.format(len(vocab)))
-# print(vocab)
 
 path_embed = sys.argv[1]
 if path_embed.endswith('json'):
     f = open(path_embed, 'rb')
     embeds = json.load(f)
     f.close
-    embed_vocab = {k for k,v in embeds.items()}
+    embed_vocab = {k.lower() for k,v in embeds.items()}
 elif path_embed.endswith('bin'):
     embeds = gm.KeyedVectors.load(path_embed).wv
-    embed_vocab = {word for word in embeds.index2word}
+    embed_vocab = {word.lower() for word in embeds.index2word}
+elif path_embed.endswith('p'):
+    f = open(path_embed,'rb')
+    embeds = pickle.load(f)
+    f.close
+    embed_vocab = {k.lower() for k,v in embeds.items()}
+
 
 print('Vocab size of embeddings: {}'.format(len(embed_vocab)))
 
