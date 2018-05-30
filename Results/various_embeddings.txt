@@ -1,0 +1,11 @@
+Wiki (52D) + Hate (52D) with PCA dim. reduction
+Dim of final word embeddings: 52
+test_accuracy
+0.727
+test_precision_macro
+0.523
+test_recall_macro
+0.406
+test_f1_macro
+0.424
+
