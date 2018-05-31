@@ -1,7 +1,7 @@
 '''
-This is meant to concatenate two sets of embeddings
-Embedding 1 can be json-loaded to dictionary structure
-Embedding 2 is a gensim model
+This is meant to concatenate two sets of embeddings (Embedding 1 and Embedding 2)
+Pass in both files containing the embeddings as command-line arguments.
+Third command-line argument is name of the pickle file in which to store the newly created, concatenated embeddings
 PCA dimensionality reduction used to ensure that resulting joined embeddings have exactly the dimension of the smaller of the two embddings. No padding needed
 '''
 from collections import defaultdict
@@ -10,43 +10,54 @@ from sklearn.decomposition import PCA
 import numpy as np
 import gensim.models as gm
 import json
+import pickle
+import sys
 
-# def save_embeddings(embeddings, outfile):
-#     ''' Saving embeddings to JSON object '''
-#     with open(outfile, 'w', encoding='utf-8') as fo:
-#         json.dump(embeddings, fo)
+def load_embeddings(embedding_file):
+    '''
+    loading embeddings from file
+    input: embeddings stored as json (json), pickle (pickle or p) or gensim model (bin)
+    output: embeddings in a dict-like structure available for look-up, vocab covered by the embeddings as a set
+    '''
+    if embedding_file.endswith('json'):
+        f = open(embedding_file, 'r')
+        embeds = json.load(f)
+        f.close
+        vocab = {k.lower() for k,v in embeds.items()}
+    elif embedding_file.endswith('bin'):
+        embeds = gm.KeyedVectors.load(embedding_file).wv
+        vocab = {word.lower() for word in embeds.index2word}
+    elif embedding_file.endswith('p') or embedding_file.endswith('pickle'):
+        f = open(embedding_file,'rb')
+        embeds = pickle.load(f)
+        f.close
+        vocab = {k.lower() for k,v in embeds.items()}
 
-PATH_WIKI = 'test_embeddings.json'
-PATH_HATE = 'model.bin'
+    return embeds, vocab
 
-f = open(PATH_WIKI, 'r')
-wikiE = json.load(f)
-f.close()
 
-hateE = gm.KeyedVectors.load(PATH_HATE).wv
-'''
-wikiE: dict, key = word(str), value = embeddings(list)
-hateE: gensim obj allowing look up, key = word(str), value = embeddings(nd.array, dtype=float32)
-'''
+
+PATH_E1 = sys.argv[1]
+PATH_E2 = sys.argv[2]
+
+E1, vocab_E1 = load_embeddings(PATH_E1)
+E2, vocab_E2 = load_embeddings(PATH_E2)
+
 # Their respective dimensions
 # Concatenated embeddings will end up having the dimensions of the low-dim. input embeddings
-dim_wikiE = len(wikiE['und'])
-dim_hateE = len(hateE['und'])
-dim_wanted = min(dim_wikiE, dim_hateE)
+dim_E1 = len(E1['und'])
+dim_E2 = len(E2['und'])
+dim_wanted = min(dim_E1, dim_E2)
 
-print('Dimensions of Wiki embeddings:', dim_wikiE)
-print('Dimensions of Hate embeddings:', dim_hateE)
+print('Dimensions of E1 embeddings:', dim_E1)
+print('Dimensions of E2 embeddings:', dim_E2)
 print('Dimensions wanted:', dim_wanted)
 
-# Getting vocab from both
-vocab_wikiE = { word for word,emb in wikiE.items()} # if wikiE is JSON serialized dict object
-# vocab_wikiE = { word for word in wikiE.index2word} # if wikiE is Gensim model
-vocab_hateE = { word for word in hateE.index2word }
-
-vocab_mututal = vocab_wikiE.intersection(vocab_hateE)
-vocab_wiki_only = vocab_wikiE.difference(vocab_hateE)
-vocab_hate_only = vocab_hateE.difference(vocab_wikiE)
-print('{} words in both embeddings, {} only in wiki embeddings, {} only in hate embeddings\nTotal of {} unique words'.format(len(vocab_mututal), len(vocab_wiki_only), len(vocab_hate_only), len(vocab_mututal) + len(vocab_hate_only) + len(vocab_wiki_only)))
+# Determining mutual vocab and vocab in only the one or the other set of embeddings
+vocab_mututal = vocab_E1.intersection(vocab_E2)
+vocab_E1_only = vocab_E1.difference(vocab_E2)
+vocab_E2_only = vocab_E2.difference(vocab_E1)
+print('{} words in both embeddings, {} only in E1 embeddings, {} only in E2 embeddings\nTotal of {} unique words'.format(len(vocab_mututal), len(vocab_E1_only), len(vocab_E2_only), len(vocab_mututal) + len(vocab_E2_only) + len(vocab_E1_only)))
 
 ''' Matrix for mutual vocab (M1)'''
 print('Working on mutual vocab...')
@@ -55,7 +66,7 @@ print('Working on mutual vocab...')
 words, embeddings = [],[]
 for token in vocab_mututal:
     words.append(token)
-    embeddings.append(np.concatenate((hateE[token], wikiE[token])))
+    embeddings.append(np.concatenate((E2[token], E1[token])))
 print('len(words)', len(words))
 print('len(embeddings)', len(embeddings))
 
@@ -73,15 +84,15 @@ M1 = { words[idx]:M1_red[idx] for idx in range(len(words))}
 # print(M1['und'])
 # print(len(M1['und']))
 
-'''Matrix for words appearing only in hate embeddings (M2)'''
-print('Working on vocab only in hate embeddings...')
-if dim_hateE > dim_wanted:
+'''Matrix for words appearing only in E2 embeddings (M2)'''
+print('Working on vocab only in E2 embeddings...')
+if dim_E2 > dim_wanted:
     print('PCA dim. reduction needed')
-    # if hateE is the one with higher dimensions, embeddings for these words need PCA
+    # if E2 is the one with higher dimensions, embeddings for these words need PCA
     words, embeddings = [],[]
-    for token in vocab_hate_only:
+    for token in vocab_E2_only:
         words.append(token)
-        embeddings.append(hateE[token])
+        embeddings.append(E2[token])
     print('len(words)', len(words))
     print('len(embeddings)', len(embeddings))
     M2_unreduced = np.array(embeddings)
@@ -93,21 +104,21 @@ if dim_hateE > dim_wanted:
     M2 = { words[idx]:M2_red[idx] for idx in range(len(words))}
 else:
     print('No need for PCA')
-    # if hateE is the one with lower dimensions, its dimensions will be dim_wanted. Hence do nothing to them
+    # if E2 is the one with lower dimensions, its dimensions will be dim_wanted. Hence do nothing to them
     M2 = dict()
-    for token in vocab_hate_only:
-        M2[token] = hateE[token]
+    for token in vocab_E2_only:
+        M2[token] = E2[token]
 
 
-'''Matrix for words appearing only in wiki embeddings (M3)'''
-print('Working on vocab only in wiki embeddings...')
-if dim_wikiE > dim_wanted:
+'''Matrix for words appearing only in E1 embeddings (M3)'''
+print('Working on vocab only in E1 embeddings...')
+if dim_E1 > dim_wanted:
     print('PCA dim. reduction needed')
-    # if wikiE is the one with higher dimensions, embeddings for these words need PCA
+    # if E1 is the one with higher dimensions, embeddings for these words need PCA
     words, embeddings = [],[]
-    for token in vocab_wiki_only:
+    for token in vocab_E1_only:
         words.append(token)
-        embeddings.append(wikiE[token])
+        embeddings.append(E1[token])
     print('len(words)', len(words))
     print('len(embeddings)', len(embeddings))
     M3_unreduced = np.array(embeddings)
@@ -119,10 +130,10 @@ if dim_wikiE > dim_wanted:
     M3 = { words[idx]:M3_red[idx] for idx in range(len(words))}
 else:
     print('No need for PCA')
-    # if wikiE is the one with lower dimensions, its dimensions will be dim_wanted. Hence do nothing to them
+    # if E1 is the one with lower dimensions, its dimensions will be dim_wanted. Hence do nothing to them
     M3 = dict()
-    for token in vocab_wiki_only:
-        M3[token] = wikiE[token]
+    for token in vocab_E1_only:
+        M3[token] = E1[token]
 
 '''
 Join all three look-up ables (dictionaries). There should be no overlapping between the keys (tokens) of the three dicts
@@ -140,7 +151,12 @@ for k,v in NEW_EMBEDDINGS.items():
         raise ValueError
 print('done')
 
-## Saving NEW_EMBEDDINGS if needed
+## Saving NEW_EMBEDDINGS
+PATH_OUT = sys.argv[3]
+
+fout = open(PATH_OUT,'wb')
+pickle.dump(NEW_EMBEDDINGS, fout)
+fout.close()
 
 
 
