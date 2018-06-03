@@ -1,5 +1,23 @@
+All results on 4-fold cross-validation (number is mean of the 4 folds)
+
+Twitter (52D) only
+
+MULTI
+
+0.728
+test_precision_macro
+0.525
+test_recall_macro
+0.407
+test_f1_macro
+0.426
+
+
 Wiki (52D) + Hate (52D) with PCA dim. reduction
 Dim of final word embeddings: 52
+
+MULTI
+
 test_accuracy
 0.727
 test_precision_macro
@@ -8,4 +26,51 @@ test_recall_macro
 0.406
 test_f1_macro
 0.424
+
+
+Wiki (52D) + Hate (52D) with padding for unknown words
+Dim of final word embeddings: 104
+
+MULTI
+
+test_accuracy
+0.727
+test_precision_macro
+0.523
+test_recall_macro
+0.407
+test_f1_macro
+0.425
+
+
+Wiki (52D) + Hate (52D) with PCA dim. reduction
+Dim of final word embeddings: 52
++ extra features (Tweet len + lexicon)
+
+MULTI
+
+test_accuracy
+0.728
+test_precision_macro
+0.525
+test_recall_macro
+0.407
+test_f1_macro
+0.424
+
+
+Wiki (52D) + Hate (52D) + Twitter (52D) with PCA dim. reduction
+Dim of final word embeddings: 52
+
+MULTI
+
+test_accuracy
+0.728
+test_precision_macro
+0.525
+test_recall_macro
+0.406
+test_f1_macro
+0.424
+
 
