@@ -20,18 +20,18 @@ def load_embeddings(embedding_file):
     output: embeddings in a dict-like structure available for look-up, vocab covered by the embeddings as a set
     '''
     if embedding_file.endswith('json'):
-        f = open(embedding_file, 'r')
+        f = open(embedding_file, 'r', encoding='utf-8')
         embeds = json.load(f)
         f.close
-        vocab = {k.lower() for k,v in embeds.items()}
+        vocab = {k for k,v in embeds.items()}
     elif embedding_file.endswith('bin'):
         embeds = gm.KeyedVectors.load(embedding_file).wv
-        vocab = {word.lower() for word in embeds.index2word}
+        vocab = {word for word in embeds.index2word}
     elif embedding_file.endswith('p') or embedding_file.endswith('pickle'):
         f = open(embedding_file,'rb')
         embeds = pickle.load(f)
         f.close
-        vocab = {k.lower() for k,v in embeds.items()}
+        vocab = {k for k,v in embeds.items()}
 
     return embeds, vocab
 
@@ -54,21 +54,24 @@ print('Dimensions of E2 embeddings:', dim_E2)
 print('Dimensions wanted:', dim_wanted)
 
 # Determining mutual vocab and vocab in only the one or the other set of embeddings
-vocab_mututal = vocab_E1.intersection(vocab_E2)
+vocab_mutual = vocab_E1.intersection(vocab_E2)
 vocab_E1_only = vocab_E1.difference(vocab_E2)
 vocab_E2_only = vocab_E2.difference(vocab_E1)
-print('{} words in both embeddings, {} only in E1 embeddings, {} only in E2 embeddings\nTotal of {} unique words'.format(len(vocab_mututal), len(vocab_E1_only), len(vocab_E2_only), len(vocab_mututal) + len(vocab_E2_only) + len(vocab_E1_only)))
+print('{} words in both embeddings, {} only in E1 embeddings, {} only in E2 embeddings\nTotal of {} unique words'.format(len(vocab_mutual), len(vocab_E1_only), len(vocab_E2_only), len(vocab_mutual) + len(vocab_E2_only) + len(vocab_E1_only)))
 
 ''' Matrix for mutual vocab (M1)'''
 print('Working on mutual vocab...')
 # get concatenated embed of mutual vocab
 # tokens and embeds contain the mutual words with their respective concatenated embeds, must match in index
 words, embeddings = [],[]
-for token in vocab_mututal:
+for token in vocab_mutual:
     words.append(token)
     embeddings.append(np.concatenate((E2[token], E1[token])))
 print('len(words)', len(words))
 print('len(embeddings)', len(embeddings))
+# print('type(embeddings)', type(embeddings))
+# print('type(embeddings[3])', type(embeddings[3]))
+# print('len(embeddings[3])', len(embeddings[3]))
 
 # join all embeddings (currently list of arrays) into single matrix feedable to sklearn's PCA
 M1_unreduced = np.array(embeddings)

@@ -15,7 +15,7 @@ from scipy.sparse import csr_matrix
 
 
 
-class Embeddings(BaseEstimator, TransformerMixin):
+class Embeddings(TransformerMixin):
     '''Transformer object turning a sentence (or tweet) into a single embedding vector'''
 
     def __init__(self, word_embeds, pool='average'):
@@ -95,6 +95,39 @@ class BadWords(BaseEstimator, TransformerMixin):
         '''returns a list of dictionaries, key: tweet value: results from dividing count by the number of tokens in tweet'''
         return [self._get_features(tweet) for tweet in tweets]
 
+
+class Lexicon(BaseEstimator, TransformerMixin):
+    '''
+    Feature extractor converting each sample to number of bad words it contains normalised by its length
+    Bad word list is passed in as positional argument of class object
+    '''
+
+    def __init__(self, word_file):
+        ''' required input: file with list of bad words '''
+        self.word_file = word_file
+
+    def fit(self, x, y=None):
+        return self
+
+    def _get_features(self, tweet):
+        '''check if twitter tokens are in a list of 'bad' words'''
+
+        with open(self.word_file, 'r',encoding='utf-8') as fi:
+            bad_list = fi.read().split(',')
+        tokens = nltk.word_tokenize(tweet)
+        len_tok = len(tokens)
+        count = 0
+        for token in tokens:
+            if token in bad_list:
+                count += 1
+        how_bad = count/len_tok
+        return round(how_bad,2)
+
+    def transform(self, tweets):
+        '''returns a list of dictionaries, key: tweet value: results from dividing count by the number of tokens in tweet'''
+        values = csr_matrix([self._get_features(tweet) for tweet in tweets])
+        return csr_matrix.transpose(values)
+
 class TweetLength(BaseEstimator, TransformerMixin):
     """
     Transformer which turns each input sample into its length in terms of number of characters
@@ -126,7 +159,7 @@ if __name__ == '__main__':
     import gensim.models as gm
 
     tweets = []
-    with open('../../Data/germeval2018.sample.txt', 'r', encoding='utf-8') as fi:
+    with open('../../Data/germeval2018.training.txt', 'r', encoding='utf-8') as fi:
         for line in fi:
             data = line.strip().split('\t')
             # making sure no missing labels
@@ -135,20 +168,25 @@ if __name__ == '__main__':
             tweets.append(data[0])
 
     print('len(tweets):', len(tweets))
-    vec_badwords = Pipeline([('badness', BadWords('lexicon.txt')), ('vec', DictVectorizer())])
-    Xbw = vec_badwords.fit_transform(tweets)
-    # print(type(Xbw))
-    # print(Xbw.shape)
-    # print(tweets[30:40])
-    # print(X[30:40])
+    # vec_badwords = Pipeline([('badness', BadWords('lexicon.txt')), ('vec', DictVectorizer())])
+    vec_lexicon = Lexicon('lexicon.txt')
+    Xlex = vec_lexicon.fit_transform(tweets)
+    print(type(Xlex))
+    print(Xlex.shape)
+    print(tweets[30:40])
+    print('hello')
+    print(Xlex[30:40])
+
+    print()
 
     vec_len = TweetLength()
     Xlen = vec_len.fit_transform(tweets)
-    # print(type(Xlen))
-    # print(Xlen.shape)
-    # print(tweets[30:40])
-    # print(Xlen[30:40])
+    print(type(Xlen))
+    print(Xlen.shape)
+    print(tweets[30:40])
+    print(Xlen[30:40])
 
+    '''
     embeddings = gm.KeyedVectors.load('../../Resources/hate_german.bin').wv
     print('Finished getting embeddings')
     vec_emb = Embeddings(embeddings, pool='max')
@@ -158,16 +196,19 @@ if __name__ == '__main__':
     # print(len(Xemb[0]))
     # print(Xemb[:2])
 
-    vec = FeatureUnion([
-                ('badwords', vec_badwords),
-                ('tweetlen', vec_len),
-                ('embs', vec_emb)
-    ])
-    X = vec.fit_transform(tweets)
+    count_word = CountVectorizer(ngram_range=(1,2))
+    count_char = CountVectorizer(analyzer='char', ngram_range=(3,4))
+
+    vectorizer = FeatureUnion([('word', count_word),
+                                ('char', count_char),
+                                ('badwords', vec_badwords),
+                                ('tweetlen', TweetLength()),
+                                ('word_embeds', vec_emb)])
+    X = vectorizer.fit_transform(tweets)
     print(type(X))
     print(X.shape)
 
-
+    '''
 
 
 
