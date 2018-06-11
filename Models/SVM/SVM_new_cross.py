@@ -46,6 +46,28 @@ def read_corpus(corpus_file, binary=True):
 
     return tweets, labels
 
+def load_embeddings(embedding_file):
+    '''
+    loading embeddings from file
+    input: embeddings stored as json (json), pickle (pickle or p) or gensim model (bin)
+    output: embeddings in a dict-like structure available for look-up, vocab covered by the embeddings as a set
+    '''
+    if embedding_file.endswith('json'):
+        f = open(embedding_file, 'r', encoding='utf-8')
+        embeds = json.load(f)
+        f.close
+        vocab = {k for k,v in embeds.items()}
+    elif embedding_file.endswith('bin'):
+        embeds = gm.KeyedVectors.load(embedding_file).wv
+        vocab = {word for word in embeds.index2word}
+    elif embedding_file.endswith('p') or embedding_file.endswith('pickle'):
+        f = open(embedding_file,'rb')
+        embeds = pickle.load(f)
+        f.close
+        vocab = {k for k,v in embeds.items()}
+
+    return embeds, vocab
+
 
 if __name__ == '__main__':
 
@@ -81,9 +103,10 @@ if __name__ == '__main__':
     # vec_badwords = Pipeline([('badness', features.BadWords('lexicon.txt')), ('vec', DictVectorizer())])
     #
     # Getting embeddings
-    path_to_embs = 'PATH TO EMBEDDINGS'
+    # Insert path to embeddings file (json, pickle or gensim models)
+    path_to_embs = '../../Resources/test_embeddings.json'
     print('Getting pretrained word embeddings from {}...'.format(path_to_embs))
-    embeddings = json.load(open(path_to_embs, 'r'))
+    embeddings, vocab = load_embeddings(path_to_embs)
     print('Done')
 
     vectorizer = FeatureUnion([('word', count_word),

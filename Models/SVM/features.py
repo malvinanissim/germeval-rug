@@ -40,7 +40,7 @@ class Embeddings(TransformerMixin):
         Obtains sentence embedding representing a whole sentence / tweet
         '''
         # simply get dim of embeddings
-        l_vector = len(word_embeds[':'])
+        l_vector = len(word_embeds['und'])
 
         # replace each word in sentence with its embedding representation via look up in the embedding dict strcuture
         # if no word_embedding available for a word, just ignore the word
@@ -95,38 +95,6 @@ class BadWords(BaseEstimator, TransformerMixin):
         '''returns a list of dictionaries, key: tweet value: results from dividing count by the number of tokens in tweet'''
         return [self._get_features(tweet) for tweet in tweets]
 
-
-class Lexicon(BaseEstimator, TransformerMixin):
-    '''
-    Feature extractor converting each sample to number of bad words it contains normalised by its length
-    Bad word list is passed in as positional argument of class object
-    '''
-
-    def __init__(self, word_file):
-        ''' required input: file with list of bad words '''
-        self.word_file = word_file
-
-    def fit(self, x, y=None):
-        return self
-
-    def _get_features(self, tweet):
-        '''check if twitter tokens are in a list of 'bad' words'''
-
-        with open(self.word_file, 'r',encoding='utf-8') as fi:
-            bad_list = fi.read().split(',')
-        tokens = nltk.word_tokenize(tweet)
-        len_tok = len(tokens)
-        count = 0
-        for token in tokens:
-            if token in bad_list:
-                count += 1
-        how_bad = count/len_tok
-        return round(how_bad,2)
-
-    def transform(self, tweets):
-        '''returns a list of dictionaries, key: tweet value: results from dividing count by the number of tokens in tweet'''
-        values = csr_matrix([self._get_features(tweet) for tweet in tweets])
-        return csr_matrix.transpose(values)
 
 class TweetLength(BaseEstimator, TransformerMixin):
     """
