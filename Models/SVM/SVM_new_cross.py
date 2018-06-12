@@ -6,17 +6,20 @@ import re
 import statistics as stats
 import stop_words
 import json
+import pickle
+import gensim.models as gm
 
 # import file containing our extra features (features.py)
 import features
 from sklearn.base import TransformerMixin
 from sklearn.preprocessing import LabelEncoder
-from sklearn.model_selection import KFold, cross_validate
+from sklearn.model_selection import KFold, cross_validate, cross_val_predict
 from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
 from sklearn.feature_extraction import DictVectorizer
 from sklearn.svm import LinearSVC
 from sklearn.pipeline import Pipeline, FeatureUnion
 
+from sklearn.metrics import classification_report
 from sklearn.metrics import accuracy_score
 from sklearn.metrics import confusion_matrix
 from sklearn.metrics import precision_recall_fscore_support
@@ -137,18 +140,18 @@ if __name__ == '__main__':
                             ('classify', clf)
     ])
 
-    # n-fold cross-validation with selection of metrics
-    # Using the tools created!
-    # print('Actual training and cross-validating...')
-    # In the process of which classifier and label encoders are fitted
-    # precision, recall, F1, F1_macro, Accuracy = cross_val(X, Y, vectorizer, clf, args.folds, args.task)
-    #
-    # # Outputting results
-    # labels = sorted(set(Y))
-    # output(labels, precision, recall, F1, F1_macro, Accuracy)
+    # Getting a model prediction for each sample full dataset using cross-validation
+    predictions = cross_val_predict(classifier, X, Y, cv=args.folds)
+
+    # Get classification report and confusion_matrix
+    class_names = sorted(set(Y))
+    print(classification_report(Y, predictions, target_names=class_names))
+    print()
+    print(class_names)
+    print(confusion_matrix(Y, predictions))
 
 
-
+    '''
     print('Training and cross_validating...')
 
     # classifier = Pipeline([('vec', TfidfVectorizer()),
@@ -164,3 +167,4 @@ if __name__ == '__main__':
         if not k.endswith('time'):
             print(k)
             print(round(stats.mean(v), 3))
+    '''
