@@ -9,9 +9,9 @@ from keras.datasets import imdb
 from keras.preprocessing import sequence
 from sklearn.model_selection import StratifiedKFold
 from sklearn.model_selection import train_test_split
-from sklearn.metrics import classification_report
+from sklearn.metrics import classification_report, accuracy_score, confusion_matrix
 from numpy import array
-import pandas as pd
+# import pandas as pd
 
 np.random.seed(0)
 
@@ -127,44 +127,76 @@ z = Dense(hidden_dims, activation="relu")(z)
 model_output = Dense(1, activation="sigmoid")(z)
 
 
-
 # split into input (X) and output (Y) variables
 X = np.concatenate((x_train, x_test), axis=0)
 Y = np.concatenate((y_train, y_test), axis=0)
-
-# create model
-model = Model(model_input, model_output)
-# Compile model
-model.compile(loss="binary_crossentropy", optimizer="adam", metrics=["accuracy"])
-# Initialize weights with word2vec
-if model_type == "CNN-non-static":
-    weights = np.array([v for v in embedding_weights.values()])
-    print("Initializing embedding layer with word2vec weights, shape", weights.shape)
-    embedding_layer = model.get_layer("embedding")
-    embedding_layer.set_weights([weights])
+assert len(X) == len(Y), 'Difference in len between X and Y!'
 
 # define 5-fold cross validation test harness
 kfold = StratifiedKFold(n_splits=5, shuffle=True, random_state=None)
+# cvpreds meant to store the prediction values provided for each sample in X via cross_val, created as dummy np.array with 0.0
+cvpreds = np.array([ 0.0 for i in range(len(X))])
+# print('cvpreds shape:', cvpreds.shape)
 cvscores = []
+count = 1
 for train, test in kfold.split(X, Y):
+    print('Working on fold {}...'.format(count))
+
+    # Setting up new, fully untrained model at each fold
+    # create model
+    model = Model(model_input, model_output)
+    # Compile model
+    model.compile(loss="binary_crossentropy", optimizer="adam", metrics=["accuracy"])
+    # Initialize weights with word2vec
+    if model_type == "CNN-non-static":
+        weights = np.array([v for v in embedding_weights.values()])
+        print("Initializing embedding layer with word2vec weights, shape", weights.shape)
+        embedding_layer = model.get_layer("embedding")
+        embedding_layer.set_weights([weights])
+
 	# Fit the model
-        model.fit(X[train], Y[train], epochs=num_epochs, batch_size=10, verbose=0)
-	# evaluate the model
-        scores = model.evaluate(X[test], Y[test], verbose=0, batch_size=batch_size)
-        print("%s: %.2f%%" % (model.metrics_names[1], scores[1]*100))
-        cvscores.append(scores[1] * 100)
-print("%.2f%% (+/- %.2f%%)" % (np.mean(cvscores), np.std(cvscores)))
+    print('Fitting...')
+    model.fit(X[train], Y[train], epochs=num_epochs, batch_size=10, verbose=0)
 
-print("CNN:")
-y_proba = model.predict(X)
-Y_classes = (y_proba > 0.5).astype(np.int)
-print(Y_classes)
+	# Evaluate the model at this fold
+    scores = model.evaluate(X[test], Y[test], verbose=0, batch_size=batch_size)
+    print("%s: %.2f%%" % (model.metrics_names[1], scores[1]*100))
+    cvscores.append(scores[1] * 100)
 
-df = pd.DataFrame(Y_classes)
-df.to_csv('pred.csv')
-
-print(classification_report(Y, Y_classes))
+    # Get predictions for X[test] at this fold and store them in cvpreds
+    preds = model.predict(X[test])
+    # preds is nd.array of shape (len(preds), 1), needs reshaping to (len(preds), ) to be compatible with cvpreds
+    preds = preds.reshape(len(preds),)
+    cvpreds[test] = preds
 
 
+    # increase counter
+    count += 1
+print("Overall accuracy: %.2f%% (+/- %.2f%%)" % (np.mean(cvscores), np.std(cvscores)))
 
+print('Sanity checks on cvpreds:')
+# print('type(cvpreds):', type(cvpreds))
+# print('len(cvpreds):', len(cvpreds))
+print('Same length as Y ?', len(cvpreds) == len(Y))
+print('Any dummy 0.0 still in cvpreds?', 0.0 in cvpreds)
 
+print('Example output cvpreds/Yguess vs. Y:')
+Yguess = (cvpreds > 0.5).astype(np.int)
+
+print('Yguess')
+print(Yguess[:30])
+print('Y')
+print(Y[:30])
+
+# print("CNN:")
+# # y_proba = model.predict(X)
+# Y_classes = (y_proba > 0.5).astype(np.int)
+# print(Y_classes)
+
+# df = pd.DataFrame(Y_classes)
+# df.to_csv('pred.csv')
+
+print(classification_report(Y, Yguess))
+print('Accuracy:', accuracy_score(Y, Yguess))
+print('Confusion matrix:')
+print(confusion_matrix(Y, Yguess))
