@@ -1,13 +1,13 @@
 from __future__ import print_function
-#import gensim.models.keyedvectors as word2vec
 from gensim.models import word2vec
+from gensim.models import KeyedVectors
 from os.path import join, exists, split
 import os
 import numpy as np
 
 
 def train_word2vec(sentence_matrix, vocabulary_inv,
-                   num_features=52, min_word_count=1, context=10):
+                   num_features=300, min_word_count=1, context=10):
     """
     Trains, saves, loads Word2Vec model
     Returns initial weights for embedding layer.
@@ -19,12 +19,12 @@ def train_word2vec(sentence_matrix, vocabulary_inv,
     min_word_count  # Minimum word count                        
     context         # Context window size 
     """
-    model_dir = '/media/p284172/1554-26B0/German_CNN/'
-    model_name = "hate_german_52.bin".format(num_features, min_word_count, context)
+    model_dir = '/media/p284172/1554-26B0/THESIS EXPERIMENTS/CNN/Embeddings/'
+    model_name = "model_hate_300.bin".format(num_features, min_word_count, context)
     model_name = join(model_dir, model_name)
     if exists(model_name):
-        embedding_model = word2vec.Word2Vec.load(model_name)
-        #embedding_model = word2vec.KeyedVectors.load_word2vec_format(model_name, binary = True)
+        #embedding_model = KeyedVectors.load_word2vec_format(model_name, binary=False) # load .txt file
+        embedding_model = word2vec.Word2Vec.load(model_name) # load .bin file
         print('Load existing Word2Vec model \'%s\'' % split(model_name)[-1])
     else:
         # Set values for various parameters
