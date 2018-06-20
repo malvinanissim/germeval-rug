@@ -24,18 +24,18 @@ model_type = "CNN-non-static"  # CNN-rand|CNN-non-static|CNN-static
 data_source = "local_dir"  # keras_data_set|local_dir
 
 # Model Hyperparameters
-embedding_dim = 52
+embedding_dim = 300
 filter_sizes = (3, 8)
 num_filters = 10
 dropout_prob = (0.5, 0.8)
-hidden_dims = 300
+hidden_dims = 1
 
 # Training parameters
-batch_size = 64
-num_epochs = 10
+batch_size = 300
+num_epochs = 2
 
 # Prepossessing parameters
-sequence_length = 400
+sequence_length = 130
 max_words = 5000
 
 # Word2Vec parameters (see train_word2vec)
@@ -47,7 +47,7 @@ context = 10
 
 
 def load_data(data_source):
-    assert data_source in ["local_dir", "/media/flavio/1554-26B0/THESIS EXPERIMENTS/CNN/CNN-1"]
+    assert data_source in ["local_dir", "/media/p284172/1554-26B0/THESIS EXPERIMENTS/CNN/CNN-1"]
     x, y, vocabulary, vocabulary_inv_list = data_helpers.load_data()
     vocabulary_inv = {key: value for key, value in enumerate(vocabulary_inv_list)}
     y = y.argmax(axis=1)
@@ -132,39 +132,38 @@ model_output = Dense(1, activation="sigmoid")(z)
 X = np.concatenate((x_train, x_test), axis=0)
 Y = np.concatenate((y_train, y_test), axis=0)
 
-# create model
-model = Model(model_input, model_output)
-# Compile model
-model.compile(loss="binary_crossentropy", optimizer="adam", metrics=["accuracy"])
-# Initialize weights with word2vec
-if model_type == "CNN-non-static":
-    weights = np.array([v for v in embedding_weights.values()])
-    print("Initializing embedding layer with word2vec weights, shape", weights.shape)
-    embedding_layer = model.get_layer("embedding")
-    embedding_layer.set_weights([weights])
 
 # define 5-fold cross validation test harness
-kfold = StratifiedKFold(n_splits=5, shuffle=True, random_state=None)
+kfold = StratifiedKFold(n_splits=2, shuffle=True, random_state=None)
 cvscores = []
+cvpred = []
 for train, test in kfold.split(X, Y):
+    # create model
+    model = Model(model_input, model_output)
+    # Compile model
+    model.compile(loss="binary_crossentropy", optimizer="adam", metrics=["accuracy"])
+    # Initialize weights with word2vec
+    if model_type == "CNN-non-static":
+        weights = np.array([v for v in embedding_weights.values()])
+        print("Initializing embedding layer with word2vec weights, shape", weights.shape)
+        embedding_layer = model.get_layer("embedding")
+        embedding_layer.set_weights([weights])
 	# Fit the model
         model.fit(X[train], Y[train], epochs=num_epochs, batch_size=10, verbose=0)
 	# evaluate the model
         scores = model.evaluate(X[test], Y[test], verbose=0, batch_size=batch_size)
+        pred = model.predict(X[test])
+        cvpred.append(pred)
         print("%s: %.2f%%" % (model.metrics_names[1], scores[1]*100))
         cvscores.append(scores[1] * 100)
 print("%.2f%% (+/- %.2f%%)" % (np.mean(cvscores), np.std(cvscores)))
 
-print("CNN:")
-y_proba = model.predict(X)
+
+for i in cvpred:
+    new_cvpred = np.concatenate(i)
+
+y_proba = new_cvpred
 Y_classes = (y_proba > 0.5).astype(np.int)
-print(Y_classes)
 
-df = pd.DataFrame(Y_classes)
-df.to_csv('pred.csv')
-
-print(classification_report(Y, Y_classes))
-
-
-
-
+print("CNN:")
+print(classification_report(Y[test], Y_classes))
