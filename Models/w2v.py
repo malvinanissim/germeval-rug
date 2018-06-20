@@ -20,7 +20,7 @@ def train_word2vec(sentence_matrix, vocabulary_inv,
     context         # Context window size 
     """
     model_dir = '/media/p284172/1554-26B0/THESIS EXPERIMENTS/CNN/Embeddings/'
-    model_name = "model_hate_300.bin".format(num_features, min_word_count, context)
+    model_name = "hate_german_52.bin".format(num_features, min_word_count, context)
     model_name = join(model_dir, model_name)
     if exists(model_name):
         #embedding_model = KeyedVectors.load_word2vec_format(model_name, binary=False) # load .txt file
