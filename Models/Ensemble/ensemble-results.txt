@@ -1,0 +1,91 @@
+META-CLASSIFIER = SVM or Logistic Regressior
+
+#########################################################################
+System: SVM (with Twitter embeddings) + CNN (with hate embeddings)
+#########################################################################
+
+Meta classifier = LinearSVC
+--------------------------------------------------
+Accuracy: 0.7455089820359282
+--------------------------------------------------
+Precision, recall and F-score per class:
+          Precision     Recall    F-score
+OFFENSE      0.726829   0.428161   0.538879
+OTHER        0.750314   0.914373   0.824259
+--------------------------------------------------
+Average (macro) F-score: 0.6815689871548336
+--------------------------------------------------
+Confusion matrix:
+Labels: ['OFFENSE', 'OTHER']
+[[149 199]
+[ 56 598]]
+
+Also SVM meta-classifier but randomized input order (Much worse! Unexplained!)
+--------------------------------------------------
+Accuracy: 0.6676646706586826
+--------------------------------------------------
+Precision, recall and F-score per class:
+          Precision     Recall    F-score
+OFFENSE      0.857143   0.051724   0.097561
+OTHER        0.663609   0.995413   0.796330
+--------------------------------------------------
+Average (macro) F-score: 0.44694562541955696
+--------------------------------------------------
+Confusion matrix:
+Labels: ['OFFENSE', 'OTHER']
+[[ 18 330]
+[  3 651]]
+
+
+Meta classifier = Logistic Regression
+--------------------------------------------------
+Accuracy: 0.7574850299401198
+--------------------------------------------------
+Precision, recall and F-score per class:
+          Precision     Recall    F-score
+OFFENSE      0.741935   0.462644   0.569912
+OTHER        0.761783   0.914373   0.831133
+--------------------------------------------------
+Average (macro) F-score: 0.7005221177440085
+--------------------------------------------------
+Confusion matrix:
+Labels: ['OFFENSE', 'OTHER']
+[[161 187]
+[ 56 598]]
+
+
+#########################################################################
+System: SVM (with Twitter embeddings) + CNN (with hate embeddings) + SVM (Twitter embeddings) multi class classifier with labels mapped to binary
+#########################################################################
+
+Meta classifier = LinearSVC
+--------------------------------------------------
+Accuracy: 0.7325349301397206
+--------------------------------------------------
+Precision, recall and F-score per class:
+         Precision     Recall    F-score
+OFFENSE      0.611732   0.629310   0.620397
+OTHER        0.799689   0.787462   0.793529
+--------------------------------------------------
+Average (macro) F-score: 0.7069625529797422
+--------------------------------------------------
+Confusion matrix:
+Labels: ['OFFENSE', 'OTHER']
+[[219 129]
+[139 515]]
+
+Meta classifer = Logistic Regressor
+--------------------------------------------------
+Accuracy: 0.7564870259481038
+--------------------------------------------------
+Precision, recall and F-score per class:
+         Precision     Recall    F-score
+OFFENSE      0.750000   0.448276   0.561151
+OTHER        0.758186   0.920489   0.831492
+--------------------------------------------------
+Average (macro) F-score: 0.6963213959219364
+--------------------------------------------------
+Confusion matrix:
+Labels: ['OFFENSE', 'OTHER']
+[[156 192]
+[ 52 602]]
