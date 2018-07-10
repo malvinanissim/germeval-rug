@@ -1,5 +1,9 @@
 '''
-This script is to be used for the ensemble system to get SVM predictions.
+This script is to be used for the ensemble system and retrieves predictions for a given set of samples by the SVM
+It learns and performs the multi-class classification task, but at the end we map it's findings of OTHER to 0 and
+everything else to 1.
+It attempts to improve the ensemble classifier, which is only binary.
+
 This SVM needs 2 datasets, train and test, training itself on the trainset and outputting predictions for each X in testset
 Predictions stored in pickle
 '''
@@ -66,8 +70,6 @@ def read_corpus_binary(pos_file, neg_file, pos_label, neg_label):
 
     return X, Y
 
-
-
 def load_embeddings(embedding_file):
     '''
     loading embeddings from file
@@ -90,6 +92,23 @@ def load_embeddings(embedding_file):
 
     return embeds, vocab
 
+def map_to_binary(predictions):
+    '''
+    The function maps the output of the multi-class classifier to binary classes.
+    OTHER to 0, everything else to 1
+    Takes list of predictions, returns a mapped np.array of predictions of shape (len(predictions), 1)
+    '''
+    mapped = []
+    for guess in predictions:
+        if guess == 'OTHER':
+            mapped.append(0)
+        else:
+            mapped.append(1)
+            # print('Found', guess)
+
+    return np.array(mapped).reshape((len(mapped),1))
+
+
 
 if __name__ == '__main__':
 
@@ -97,7 +116,7 @@ if __name__ == '__main__':
     # pos_path = '../../Data/offense.train.txt'
     # neg_path = '../../Data/other.train.txt'
 
-    Xtrain, Ytrain = read_corpus('../../Data/germeval.ensemble.train.txt')
+    Xtrain, Ytrain = read_corpus('../Data/germeval.ensemble.train.txt', binary=False)
     assert len(Xtrain) == len(Ytrain), 'Unequal length for Xtrain and Ytrain!'
     print('{} train samples'.format(len(Xtrain)))
 
@@ -105,7 +124,7 @@ if __name__ == '__main__':
     # pos_path = '../../Data/offense.test.txt'
     # neg_path = '../../Data/other.test.txt'
 
-    Xtest, Ytest = read_corpus('../../Data/germeval.ensemble.test.txt')
+    Xtest, Ytest = read_corpus('../Data/germeval.ensemble.test.txt', binary=False)
     assert len(Xtest) == len(Ytest), 'Unequal length for Xtest and Ytest!'
     print('{} test samples'.format(len(Xtest)))
 
@@ -117,8 +136,8 @@ if __name__ == '__main__':
     count_char = CountVectorizer(analyzer='char', ngram_range=(3,7))
 
     # Getting twitter embeddings
-    path_to_embs = '../../Resources/test_embeddings.json'
-    # path_to_embs = '../embeddings/twitter_de_52D.p'
+    # path_to_embs = '../../Resources/test_embeddings.json'
+    path_to_embs = '../embeddings/twitter_de_52D.p'
     print('Getting pretrained word embeddings from {}...'.format(path_to_embs))
     embeddings, _ = load_embeddings(path_to_embs)
     print('Done')
@@ -129,15 +148,19 @@ if __name__ == '__main__':
 
     classifier = Pipeline([
                             ('vectorize', vectorizer),
-                            ('classify', SVC(kernel='linear', probability=True))
+                            ('classify', SVC(kernel='linear'))
     ])
 
     print('Fitting model...')
     classifier.fit(Xtrain, Ytrain)
 
     print('Predicting...')
-    Yguess = classifier.predict_proba(Xtest)
+    Yguess = classifier.predict(Xtest)
 
+    # Map to binary labels
+    Yguess = map_to_binary(Yguess)
+    # print(Yguess.shape)
+    # print(Yguess[:20])
 
     print('Turning to scipy:')
     Ysvm = csr_matrix(Yguess)
@@ -146,6 +169,6 @@ if __name__ == '__main__':
     print(Ysvm)
 
     # Pickling the predictions
-    save_to = open('NEW-test-svm-predict.p', 'wb')
+    save_to = open('Multi-test-predict.p', 'wb')
     pickle.dump(Ysvm, save_to)
     save_to.close()

@@ -30,18 +30,26 @@ def load_data_and_labels():
     Returns split sentences and labels.
     """
     # Load data from files
-    positive_examples = list(open("../../Data/offense.train.txt").readlines())
-    positive_examples = [s.strip() for s in positive_examples]
-    negative_examples = list(open("../../Data/other.train.txt").readlines())
-    negative_examples = [s.strip() for s in negative_examples]
-    # Split by words
-    x_text = positive_examples + negative_examples
-    x_text = [clean_str(sent) for sent in x_text]
-    x_text = [s.split(" ") for s in x_text]
-    # Generate labels
-    positive_labels = [[0, 1] for _ in positive_examples]
-    negative_labels = [[1, 0] for _ in negative_examples]
-    y = np.concatenate([positive_labels, negative_labels], 0)
+    samples, labels = [],[]
+    with open('../../Data/germeval.ensemble.train.txt','r', encoding='utf-8') as fi:
+        for line in fi:
+            data = line.strip().split('\t')
+            # get sample
+            samples.append(data[0])
+            # get label
+            if data[1] == 'OFFENSE':
+                labels.append([0,1]) # label of positive sample
+            elif data[1] == 'OTHER':
+                labels.append([1,0]) # label of negative sample
+            else:
+                raise ValueError('Unknown label!')
+
+    # Clean and split samples
+    x_text = [clean_str(sample) for sample in samples]
+    x_text = [s.split(" ") for s in x_text] # each sample as list of words/strings
+    # Turn labels to np array
+    y = np.array(labels)
+
     return [x_text, y]
 
 def load_data_and_labels_test():
@@ -49,18 +57,26 @@ def load_data_and_labels_test():
     Copy of load_data_and_labels to be applied to separate set of test data
     """
     # Load data from files
-    positive_examples = list(open("../../Data/offense.test.txt").readlines())
-    positive_examples = [s.strip() for s in positive_examples]
-    negative_examples = list(open("../../Data/other.test.txt").readlines())
-    negative_examples = [s.strip() for s in negative_examples]
-    # Split by words
-    x_text = positive_examples + negative_examples
-    x_text = [clean_str(sent) for sent in x_text]
-    x_text = [s.split(" ") for s in x_text]
-    # Generate labels
-    positive_labels = [[0, 1] for _ in positive_examples]
-    negative_labels = [[1, 0] for _ in negative_examples]
-    y = np.concatenate([positive_labels, negative_labels], 0)
+    samples, labels = [],[]
+    with open('../../Data/germeval.ensemble.test.txt','r', encoding='utf-8') as fi:
+        for line in fi:
+            data = line.strip().split('\t')
+            # get sample
+            samples.append(data[0])
+            # get label
+            if data[1] == 'OFFENSE':
+                labels.append([0,1]) # label of positive sample
+            elif data[1] == 'OTHER':
+                labels.append([1,0]) # label of negative sample
+            else:
+                raise ValueError('Unknown label!')
+
+    # Clean and split samples
+    x_text = [clean_str(sample) for sample in samples]
+    x_text = [s.split(" ") for s in x_text] # each sample as list of words/strings
+    # Turn labels to np array
+    y = np.array(labels)
+
     return [x_text, y]
 
 

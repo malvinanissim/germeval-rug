@@ -155,7 +155,6 @@ cvscores = []
 count = 1
 for train, test in kfold.split(X, Y):
     print('Working on fold {}...'.format(count))
-    print('hi!')
     print(X[train].shape)
     print(X[test].shape)
 
@@ -203,10 +202,8 @@ Yguess = cvpreds
 
 print('Yguess')
 print(Yguess[:30])
-print(Yguess[-10:])
 print('Y')
 print(Y[:30])
-print(Y[-10:])
 
 # Turning to scipy
 print('Turning to scipy:')
@@ -216,7 +213,7 @@ print(Ycnn.shape)
 # print(Ycnn)
 
 # Pickling the predictions
-save_to = open('train-cnn-predict.p', 'wb')
+save_to = open('NEW-train-cnn-predict.p', 'wb')
 pickle.dump(Ycnn, save_to)
 save_to.close()
 

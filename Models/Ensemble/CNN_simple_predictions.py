@@ -194,7 +194,7 @@ print(Ycnn.shape)
 print(Ycnn)
 
 # Pickling the predictions
-save_to = open('test-cnn-predict.p', 'wb')
+save_to = open('NEW-test-cnn-predict.p', 'wb')
 pickle.dump(Ycnn, save_to)
 save_to.close()
 

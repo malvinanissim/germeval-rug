@@ -3,6 +3,8 @@ This script implements an ensemble classifer for GermEval 2018.
 The lower-level classifiers are SVM and CNN
 the meta-level classifer is optionally a LinearSVC or a Logistic Regressor
 
+This is a second version, incorporating information from the multi-class SVM classifier as well!
+
 Predictions outputted by SVM and CNN need to be obtained beforehand, stored as pickle, and loaded
 '''
 
@@ -126,25 +128,28 @@ if __name__ == '__main__':
                                     ('badwords', features.Lexicon('lexicon.txt'))])
     X_feats = meta_vectorizer.fit_transform(Xtrain)
 
-    # load in predictions for training data by 1) svm and 2) cnn
+    # load in predictions for training data by 1) svm, 2) cnn and 3)  multi-class svm
     # Predictions already saved as scipy sparse matrices
-    print('Loading SVM and CNN predictions on train...')
+    print('Loading SVM, CNN predictions + Multi-class SVM predictions for train...')
     f1 = open('NEW-train-svm-predict.p', 'rb')
     SVM_train_predict = pickle.load(f1)
     f1.close()
     f2 = open('NEW-train-cnn-predict.p', 'rb')
     CNN_train_predict = pickle.load(f2)
     f2.close()
+    f3 = open('Multi-train-predict.p', 'rb')
+    Multi_train_predict = pickle.load(f3)
+    f3.close()
 
     # Combine all features to input to ensemble classifier
     print('Stacking all features...')
-    Xtrain_feats = hstack((X_feats, SVM_train_predict, CNN_train_predict))
+    Xtrain_feats = hstack((X_feats, SVM_train_predict, CNN_train_predict, Multi_train_predict))
     print(type(Xtrain_feats))
     print('Shape of featurized Xtrain:', Xtrain_feats.shape)
 
     # Set-up meta classifier
-    meta_clf = Pipeline([('clf', LinearSVC(random_state=0))]) # LinearSVC
-    # meta_clf = Pipeline([('clf', LogisticRegression(random_state=0))]) # Logistic Regressor
+    # meta_clf = Pipeline([('clf', LinearSVC(random_state=0))]) # LinearSVC
+    meta_clf = Pipeline([('clf', LogisticRegression(random_state=0))]) # Logistic Regressor
 
     # Fit it
     print('Fitting meta-classifier...')
@@ -167,18 +172,21 @@ if __name__ == '__main__':
 
     Xtest_feats = meta_vectorizer.transform(Xtest)
 
-    # Loading predictions of SVM and CNN on test data
-    print('Loading SVM and CNN predictions on test...')
+    # Loading predictions of SVM, CNN and Multi-class SVM on test data
+    print('Loading SVM, CNN predictions + Multi-class SVM predictions for test...')
     ft1 = open('NEW-test-svm-predict.p', 'rb')
     SVM_test_predict = pickle.load(ft1)
     ft1.close()
     ft2 = open('NEW-test-cnn-predict.p', 'rb')
     CNN_test_predict = pickle.load(ft2)
     ft2.close()
+    f3 = open('Multi-test-predict.p', 'rb')
+    Multi_test_predict = pickle.load(f3)
+    f3.close()
 
     # Combine all features for test input to input to ensemble classifier
     print('Stacking all features...')
-    Xtest_feats = hstack((Xtest_feats, SVM_test_predict, CNN_test_predict))
+    Xtest_feats = hstack((Xtest_feats, SVM_test_predict, CNN_test_predict, Multi_test_predict))
     print('Shape of featurized Xtest:', Xtest_feats.shape)
 
     # Use trained meta-classifier to get predictions on test set
@@ -193,56 +201,36 @@ if __name__ == '__main__':
 
     Meta classifier = LinearSVC
     --------------------------------------------------
-    Accuracy: 0.7455089820359282
+    Accuracy: 0.7325349301397206
     --------------------------------------------------
     Precision, recall and F-score per class:
                 Precision     Recall    F-score
-    OFFENSE      0.726829   0.428161   0.538879
-    OTHER        0.750314   0.914373   0.824259
+    OFFENSE      0.611732   0.629310   0.620397
+    OTHER        0.799689   0.787462   0.793529
     --------------------------------------------------
-    Average (macro) F-score: 0.6815689871548336
+    Average (macro) F-score: 0.7069625529797422
     --------------------------------------------------
     Confusion matrix:
     Labels: ['OFFENSE', 'OTHER']
-    [[149 199]
-     [ 56 598]]
+    [[219 129]
+     [139 515]]
 
-    Randomized input order (Much worse! Unexplained!)
-
+    Meta classifer = Logistic Regressor
     --------------------------------------------------
-    Accuracy: 0.6676646706586826
+    Accuracy: 0.7564870259481038
     --------------------------------------------------
     Precision, recall and F-score per class:
                 Precision     Recall    F-score
-    OFFENSE      0.857143   0.051724   0.097561
-    OTHER        0.663609   0.995413   0.796330
+    OFFENSE      0.750000   0.448276   0.561151
+    OTHER        0.758186   0.920489   0.831492
     --------------------------------------------------
-    Average (macro) F-score: 0.44694562541955696
-    --------------------------------------------------
-    Confusion matrix:
-    Labels: ['OFFENSE', 'OTHER']
-    [[ 18 330]
-     [  3 651]]
-
-
-
-
-
-    Meta classifier = Logistic Regression
-    --------------------------------------------------
-    Accuracy: 0.7574850299401198
-    --------------------------------------------------
-    Precision, recall and F-score per class:
-                Precision     Recall    F-score
-    OFFENSE      0.741935   0.462644   0.569912
-    OTHER        0.761783   0.914373   0.831133
-    --------------------------------------------------
-    Average (macro) F-score: 0.7005221177440085
+    Average (macro) F-score: 0.6963213959219364
     --------------------------------------------------
     Confusion matrix:
     Labels: ['OFFENSE', 'OTHER']
-    [[161 187]
-     [ 56 598]]
+    [[156 192]
+     [ 52 602]]
+
 
 
     '''
