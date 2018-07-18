@@ -1,0 +1,79 @@
+Using SVM with German data from Espressp dataset
+
+Label distribution in German espresso data
+
+(Orig.) Rating	samples
+0    		9296
+1     		425
+2     		106
+3      		18
+
+Label 		samples
+OTHER      	9296
+OFFENSE     	549
+
+
+######################################
+Results with SVM (with best-performing embeddings)
+######################################
+
+Using germeval data only...
+
+3759 training samples
+--------------------------------------------------
+Accuracy: 0.7744
+--------------------------------------------------
+Precision, recall and F-score per class:
+            Precision     Recall    F-score
+OFFENSE      0.706790   0.550481   0.618919
+OTHER        0.798056   0.886091   0.839773
+--------------------------------------------------
+Average (macro) F-score: 0.7293458230958231
+--------------------------------------------------
+Confusion matrix:
+Labels: ['OFFENSE', 'OTHER']
+[[229 187]
+ [ 95 739]]
+
+
+
+Using all espresso data...
+
+13604 training samples
+--------------------------------------------------
+Accuracy: 0.7584
+--------------------------------------------------
+Precision, recall and F-score per class:
+            Precision     Recall    F-score
+OFFENSE      0.711111   0.461538   0.559767
+OTHER        0.771429   0.906475   0.833517
+--------------------------------------------------
+Average (macro) F-score: 0.6966419265768995
+--------------------------------------------------
+Confusion matrix:
+Labels: ['OFFENSE', 'OTHER']
+[[192 224]
+ [ 78 756]]
+
+
+
+
+
+Using only offense-labelled espresso data...
+
+4308 training samples
+--------------------------------------------------
+Accuracy: 0.7032
+--------------------------------------------------
+Precision, recall and F-score per class:
+            Precision     Recall    F-score
+OFFENSE      0.547170   0.627404   0.584546
+OTHER        0.799483   0.741007   0.769135
+--------------------------------------------------
+Average (macro) F-score: 0.6768407533948271
+--------------------------------------------------
+Confusion matrix:
+Labels: ['OFFENSE', 'OTHER']
+[[261 155]
+ [216 618]]
+
