@@ -69,14 +69,7 @@ def load_data(data_source):
 
     return x, y, len_train, vocabulary_inv
 
-# def load_data_test(data_source):
-#     assert data_source in ["local_dir"]
-#     x, y, vocabulary, vocabulary_inv_list = data_helpers.load_data_test()
-#     vocabulary_inv = {key: value for key, value in enumerate(vocabulary_inv_list)}
-#     y = y.argmax(axis=1)
-#
-#    return x, y, vocabulary_inv
-#
+
 # def pad_samples_0(samples, len_needed):
 #     """
 #     Pads each sample in dataset with 0s to len_needed
@@ -118,11 +111,11 @@ def evaluate(Ygold, Yguess):
     print()
 
 
-# Get training data
+# Get full dataset
 print("Load data...")
 X, Y, len_train, vocabulary_inv = load_data(data_source)
 # print("Xtrain shape:", Xtrain.shape)
-print("Vocabulary Size train: {:d}".format(len(vocabulary_inv)))
+print("Vocabulary Size: {:d}".format(len(vocabulary_inv)))
 
 # Resplit into train and test data using len_train!
 # Recall the full dataset is TRAIN + TEST
@@ -233,11 +226,11 @@ for pred in Ytest:
         Ygold.append('OFFENSE')
     else:
         raise ValueError
-print(len(Ygold), 'true test labels')
+# print(len(Ygold), 'true test labels')
 
 evaluate(Ygold, Yguess)
-print()
-print(classification_report(Ygold, Yguess))
+# print()
+# print(classification_report(Ygold, Yguess))
 
 
 
