@@ -1,7 +1,5 @@
 '''
 This script is to be used for the ensemble system and retrieves predictions for a given set of samples by the SVM.
-Reading in is different from previous implementations of the SVM. We now assume purely binary classification, where
-the data are stored in two separate files, one containing the positive and one the negative examples.
 
 This SVM needs 1 dataset, using cross validation to output a value for each X
 predictions stored in pickle
@@ -96,10 +94,6 @@ def load_embeddings(embedding_file):
 
 if __name__ == '__main__':
 
-    # load training data set
-    # pos_path = '../../Data/offense.train.txt'
-    # neg_path = '../../Data/other.train.txt'
-    # X, Y = read_corpus_binary(pos_path, neg_path, 1, 0)
 
     X, Y = read_corpus('../../Data/germeval.ensemble.train.txt')
     assert len(X) == len(Y), 'Unequal length for X and Y!'
@@ -133,13 +127,6 @@ if __name__ == '__main__':
     print('Cross-validating on {} folds...'.format(folds))
     Yguess = cross_val_predict(classifier, X, Y, cv=folds, method='predict_proba')
 
-    # print('Info on Yguess:')
-    # print('type(Yguess)', type(Yguess))
-    # # if isinstance(Yguess, np.array):
-    # #     print(Yguess.shape)
-    # print('len(Yguess)', len(Yguess))
-    # print(Yguess.shape)
-    # print(Yguess)
 
     print('Turning to scipy:')
     Ysvm = csr_matrix(Yguess)

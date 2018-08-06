@@ -72,52 +72,37 @@ def evaluate(Ygold, Yguess):
 
 if __name__ == '__main__':
 
-    # Parse arguments
-    parser = argparse.ArgumentParser(description='Run models for either binary or multi-class task')
-    parser.add_argument('file', metavar='f', type=str, help='Path to data file')
-    parser.add_argument('--task', metavar='t', type=str, default='binary', help="'binary' for binary and 'multi' for multi-class task")
-    args = parser.parse_args()
 
-    # Hyper-parameters for SVM:
-    C_val = 1
-    Kernel = 'linear'
+    train_dat = '../../Data/germeval.ensemble.train.txt'
+    test_dat = '../../Data/germeval.ensemble.test.txt'
 
-    print('Reading in data...')
-    if args.task == 'binary':
-        X,Y = read_corpus(args.file)
-    else:
-        X,Y = read_corpus(args.file, binary=False)
+    print('Loading data...')
 
-    # Using 20% of the data as validation data
-    split_point = int(0.8*len(X))
-    Xtrain = X[:split_point]
-    Ytrain = Y[:split_point]
-    Xtest = X[split_point:]
-    Ytest = Y[split_point:]
-
+    Xtrain, Ytrain = read_corpus(train_dat, binary=False)
+    Xtest, Ytest = read_corpus(test_dat, binary=False)
 
     # Setting up most frequent class (mfc) baseline
     classifer_mfc = Pipeline([('vec', CountVectorizer()),
                                 ('classify', DummyClassifier(strategy='most_frequent', random_state=0))])
 
     # Setting up SVM baseline
-    classifier_svm = Pipeline([('vec', TfidfVectorizer()),
-                                ('classify', SVC(kernel=Kernel, C=C_val))])
+    # classifier_svm = Pipeline([('vec', TfidfVectorizer()),
+    #                             ('classify', SVC(kernel=Kernel, C=C_val))])
 
     # Fitting either model
     print('Fitting models...')
     classifer_mfc.fit(Xtrain,Ytrain)
-    classifier_svm.fit(Xtrain,Ytrain)
+    # classifier_svm.fit(Xtrain,Ytrain)
 
     # Predicting using either model
     print('Predicting...')
     Yguess_mfc = classifer_mfc.predict(Xtest)
-    Yguess_svm = classifier_svm.predict(Xtest)
+    # Yguess_svm = classifier_svm.predict(Xtest)
 
     # Evaluating the performance of either model on validation data
     print('Results for most frequent class baseline:')
     evaluate(Ytest, Yguess_mfc)
     print()
 
-    print('Results for svm baseline:')
-    evaluate(Ytest, Yguess_svm)
+    # print('Results for svm baseline:')
+    # evaluate(Ytest, Yguess_svm)

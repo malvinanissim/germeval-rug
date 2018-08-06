@@ -2,7 +2,7 @@ Baseline systems
 1) Most frequent class
 2) Tfidf-weighted word unigrams + linear SVM
 
-Evaluation on 20% validation data
+Evaluation on random 20% validation data
 
 **************************************************
 

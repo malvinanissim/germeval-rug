@@ -8,8 +8,7 @@ import pickle
 Original taken from https://github.com/dennybritz/cnn-text-classification-tf
 
 This script assumes that we have a fixed train and a fixed test set.
-The data loading method assumes that there are labels available for the fixed test set (for evaluation).
-
+The data loading method assumes that the test set is the real test set and does not come with labels
 
 """
 
@@ -33,7 +32,7 @@ def load_data_and_labels():
     """
     # Load train data from files
     samples, labels = [],[]
-    with open('../../Data/germeval.ensemble.train.txt','r', encoding='utf-8') as fi:
+    with open('../../Data/germeval2018.training.txt','r', encoding='utf-8') as fi:
         for line in fi:
             data = line.strip().split('\t')
             # get sample
@@ -56,26 +55,19 @@ def load_data_and_labels():
     len_train = len(Xtrain)
     # We need to remember the len of train, we will put train + test together to build the vocab. Then we will recognise the first len_train items as coming from the train set
 
-    # Load test data,
-    Xtest, Ytest = [], []
-    with open('../../Data/germeval.ensemble.test.txt','r', encoding='utf-8') as fi:
+    # Load test data, no labels
+    Xtest = []
+    with open('../../Data/germeval2018.test.txt','r', encoding='utf-8') as fi:
         for line in fi:
             data = line.strip().split('\t')
             # get sample
             Xtest.append(data[0])
-            # get label
-            if data[1] == 'OFFENSE':
-                Ytest.append([0,1]) # label of positive sample
-            elif data[1] == 'OTHER':
-                Ytest.append([1,0]) # label of negative sample
-            else:
-                raise ValueError('Unknown label!')
 
     Xtest = [clean_str(sample) for sample in Xtest]
     Xtest = [s.split(" ") for s in Xtest] # each sample as list of words/strings
-    Ytest = np.array(Ytest)
+    # Ytest = np.array(Ytest)
 
-    return [Xtrain, Ytrain, Xtest, Ytest, len_train, idx_espresso]
+    return [Xtrain, Ytrain, Xtest, len_train, idx_espresso]
 
 def add_espresso_data(Xorig, Yorig):
     """
@@ -153,16 +145,17 @@ def load_data():
     Returns input vectors, labels, vocabulary, and inverse vocabulary.
     """
     # Load and preprocess data
-    Xtrain, Ytrain, Xtest, Ytest, len_train, idx_espresso = load_data_and_labels()
+    Xtrain, Ytrain, Xtest, len_train, idx_espresso = load_data_and_labels()
     # sentences, labels, idx_espresso = load_data_and_labels()
     # Vocab needs to be build on the basis of the whole dataset, so we put train and test together! TRAIN, then TEST
     X = Xtrain + Xtest # X is list while Y is np.array
-    Y = np.concatenate((Ytrain, Ytest), axis=0)
+    Y = Ytrain
 
     sentences_padded = pad_sentences(X)
     vocabulary, vocabulary_inv = build_vocab(sentences_padded)
     X, Y = build_input_data(sentences_padded, Y, vocabulary)
     return [X, Y, vocabulary, vocabulary_inv, len_train, idx_espresso]
+
 
 
 def batch_iter(data, batch_size, num_epochs):

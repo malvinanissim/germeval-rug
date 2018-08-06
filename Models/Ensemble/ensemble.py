@@ -51,28 +51,6 @@ def read_corpus(corpus_file, binary=True):
 
     return tweets, labels
 
-# def read_corpus_binary(pos_file, neg_file, pos_label, neg_label):
-#     '''Reading in data from 2 files, containing the positive and the negative training samples
-#     Order: All positive samples first, then all negative samples'''
-#
-#     X, Y = [],[]
-#     # Getting all positive samples
-#     with open(pos_file, 'r', encoding='utf-8') as fpos:
-#         for line in fpos:
-#             assert len(line) > 0, 'Empty line found!'
-#             X.append(line.strip())
-#             Y.append(pos_label)
-#     # Getting all negative samples
-#     with open(neg_file, 'r', encoding='utf-8') as fneg:
-#         for line in fneg:
-#             assert len(line) > 0, 'Empty line found!'
-#             X.append(line.strip())
-#             Y.append(neg_label)
-#
-#     print('len(X):', len(X))
-#     print('len(Y):', len(Y))
-#
-#     return X, Y
 
 
 def evaluate(Ygold, Yguess):
@@ -109,13 +87,11 @@ if __name__ == '__main__':
     PART: TRAINING META-CLASSIFIER
     '''
 
-    # load training data of ensemble classifier in pos-neg order
-    # pos_path = '../../Data/offense.train.txt'
-    # neg_path = '../../Data/other.train.txt'
+    germeval_train = '../../Data/germeval.ensemble.train.txt'
+    germeval_test = '../../Data/germeval.ensemble.test.txt'
 
     # load training data of ensemble classifier
-    train_path = '../../Data/germeval.ensemble.train.txt'
-    Xtrain, Ytrain = read_corpus(train_path)
+    Xtrain, Ytrain = read_corpus(germeval_train)
     assert len(Xtrain) == len(Ytrain), 'Unequal length for Xtrain and Ytrain!'
     print('{} training samples'.format(len(Xtrain)))
 
@@ -129,10 +105,10 @@ if __name__ == '__main__':
     # load in predictions for training data by 1) svm and 2) cnn
     # Predictions already saved as scipy sparse matrices
     print('Loading SVM and CNN predictions on train...')
-    f1 = open('NEW-train-svm-predict.p', 'rb')
+    f1 = open('TRAIN-dev-svm.p', 'rb')
     SVM_train_predict = pickle.load(f1)
     f1.close()
-    f2 = open('NEW-train-cnn-predict.p', 'rb')
+    f2 = open('TRAIN-dev-cnn.p', 'rb')
     CNN_train_predict = pickle.load(f2)
     f2.close()
 
@@ -143,8 +119,8 @@ if __name__ == '__main__':
     print('Shape of featurized Xtrain:', Xtrain_feats.shape)
 
     # Set-up meta classifier
-    meta_clf = Pipeline([('clf', LinearSVC(random_state=0))]) # LinearSVC
-    # meta_clf = Pipeline([('clf', LogisticRegression(random_state=0))]) # Logistic Regressor
+    # meta_clf = Pipeline([('clf', LinearSVC(random_state=0))]) # LinearSVC
+    meta_clf = Pipeline([('clf', LogisticRegression(random_state=0))]) # Logistic Regressor
 
     # Fit it
     print('Fitting meta-classifier...')
@@ -155,13 +131,17 @@ if __name__ == '__main__':
     PART: TESTING META-CLASSIFIER
     '''
 
-    # load test data of ensemble classifier in pos-neg order
-    # pos_path = '../../Data/offense.test.txt'
-    # neg_path = '../../Data/other.test.txt'
+    # load real test data of ensemble classifier without labels
+    # print('Reading in Test data...')
+    # Xtest = []
+    # with open(germeval_test, 'r', encoding='utf-8') as fi:
+    #     for line in fi:
+    #         if line.strip() != '':
+    #             Xtest.append(line.strip())
+    #
 
-    # load test data of ensemble classifier
-    test_path = '../../Data/germeval.ensemble.test.txt'
-    Xtest, Ytest = read_corpus(test_path)
+
+    Xtest, Ytest = read_corpus(germeval_test)
     assert len(Xtest) == len(Ytest), 'Unequal length for Xtest and Ytest!'
     print('{} test samples'.format(len(Xtest)))
 
@@ -169,10 +149,10 @@ if __name__ == '__main__':
 
     # Loading predictions of SVM and CNN on test data
     print('Loading SVM and CNN predictions on test...')
-    ft1 = open('NEW-test-svm-predict.p', 'rb')
+    ft1 = open('TEST-dev-svm.p', 'rb')
     SVM_test_predict = pickle.load(ft1)
     ft1.close()
-    ft2 = open('NEW-test-cnn-predict.p', 'rb')
+    ft2 = open('TEST-dev-cnn.p', 'rb')
     CNN_test_predict = pickle.load(ft2)
     ft2.close()
 
@@ -182,14 +162,34 @@ if __name__ == '__main__':
     print('Shape of featurized Xtest:', Xtest_feats.shape)
 
     # Use trained meta-classifier to get predictions on test set
-    Yguess = meta_clf.predict(Xtest_feats)
+    Yguess = meta_clf.predict(Xtest_feats)    # assert len(Xtest) == len(Yguess), 'Yguess not the same length as Xtest!'
+    print(len(Yguess), 'predictions in total')
 
     # Evaluate
     evaluate(Ytest, Yguess)
 
+    '''
+    Outputting in format required
+
+
+    print('Outputting predictions...')
+
+    outdir = '../../Submission'
+    fname = 'rug_coarse_3.txt'
+
+    with open(outdir + '/' + fname, 'w', encoding='utf-8') as fo:
+        assert len(Yguess) == len(Xtest), 'Unequal length between samples and predictions!'
+        for idx in range(len(Yguess)):
+            print(Xtest[idx] + '\t' + Yguess[idx] + '\t' + 'XXX', file=fo) # binary task (coarse)
+            # print(Xtest_raw[idx] + '\t' + 'XXX' + '\t' + Yguess[idx], file=fo) # multi task (fine)
+
+    print('Done.')
+    '''
+
+
 
     '''
-    Results:
+    First Results:
 
     Meta classifier = LinearSVC
     --------------------------------------------------
@@ -206,25 +206,6 @@ if __name__ == '__main__':
     Labels: ['OFFENSE', 'OTHER']
     [[149 199]
      [ 56 598]]
-
-    Randomized input order (Much worse! Unexplained!)
-
-    --------------------------------------------------
-    Accuracy: 0.6676646706586826
-    --------------------------------------------------
-    Precision, recall and F-score per class:
-                Precision     Recall    F-score
-    OFFENSE      0.857143   0.051724   0.097561
-    OTHER        0.663609   0.995413   0.796330
-    --------------------------------------------------
-    Average (macro) F-score: 0.44694562541955696
-    --------------------------------------------------
-    Confusion matrix:
-    Labels: ['OFFENSE', 'OTHER']
-    [[ 18 330]
-     [  3 651]]
-
-
 
 
 
@@ -243,6 +224,27 @@ if __name__ == '__main__':
     Labels: ['OFFENSE', 'OTHER']
     [[161 187]
      [ 56 598]]
+
+
+    New RES:
+    With Espresso data!
+
+    LogisticRegression
+    --------------------------------------------------
+    Accuracy: 0.7514970059880239
+    --------------------------------------------------
+    Precision, recall and F-score per class:
+                Precision     Recall    F-score
+    OFFENSE      0.710638   0.479885   0.572899
+    OTHER        0.764016   0.896024   0.824771
+    --------------------------------------------------
+    Average (macro) F-score: 0.6988350435696844
+    --------------------------------------------------
+    Confusion matrix:
+    Labels: ['OFFENSE', 'OTHER']
+    [[167 181]
+     [ 68 586]]
+
 
 
     '''

@@ -1,5 +1,6 @@
 '''
 This script is to be used for the ensemble system and retrieves predictions for a given set of samples by the CNN.
+Espresso data refers to the PSP dataset.
 
 This CNN needs 1 dataset, using cross validation to output a value for each X
 predictions stored in pickle
@@ -33,11 +34,11 @@ model_type = "CNN-non-static"  # CNN-rand|CNN-non-static|CNN-static
 data_source = "local_dir"  # keras_data_set|local_dir
 
 # Model Hyperparameters
-embedding_dim = 52
-filter_sizes = (3, 8)
-num_filters = 10
-dropout_prob = (0.5, 0.8)
-hidden_dims = 300
+embedding_dim = 300
+filter_sizes = (3, 5, 8)
+num_filters = 6
+dropout_prob = (0.6, 0.8)
+hidden_dims = 50
 
 # Training parameters
 batch_size = 64
@@ -57,26 +58,18 @@ context = 10
 
 def load_data(data_source):
     assert data_source in ["local_dir"]
-    x, y, vocabulary, vocabulary_inv_list = data_helpers.load_data()
+    x, y, vocabulary, vocabulary_inv_list, idx_espresso = data_helpers.load_data()
     vocabulary_inv = {key: value for key, value in enumerate(vocabulary_inv_list)}
     y = y.argmax(axis=1)
 
-    # Shuffle data
-    # shuffle_indices = np.random.permutation(np.arange(len(y)))
-    # x = x[shuffle_indices]
-    # y = y[shuffle_indices]
-    # train_len = int(len(x) * 0.9)
-    # x_train = x[:train_len]
-    # y_train = y[:train_len]
-    # x_test = x[train_len:]
-    # y_test = y[train_len:]
-
-    return x, y, vocabulary_inv
+    return x, y, vocabulary_inv, idx_espresso
 
 
 # Data Preparation
 print("Load data...")
-x, y, vocabulary_inv = load_data(data_source)
+x, y, vocabulary_inv, idx_espresso = load_data(data_source)
+print(len(idx_espresso), 'samples from Espresso dataset, predictions for which to be removed at the end')
+
 
 if sequence_length != x.shape[1]:
     print("Adjusting sequence length for actual size")
@@ -140,10 +133,6 @@ model_output = Dense(1, activation="sigmoid")(z)
 # Y = np.concatenate((y_train, y_test), axis=0)
 X = x
 Y = y
-# print('hello!')
-# print(type(X), X.shape)
-# print(type(Y), Y.shape)
-# print(X[:1])
 assert len(X) == len(Y), 'Difference in len between X and Y!'
 
 # define 5-fold cross validation test harness
@@ -172,7 +161,7 @@ for train, test in kfold.split(X, Y):
 
 	# Fit the model
     print('Fitting...')
-    model.fit(X[train], Y[train], epochs=num_epochs, batch_size=10, verbose=0)
+    model.fit(X[train], Y[train], epochs=num_epochs, batch_size=batch_size, verbose=0)
 
 	# Evaluate the model at this fold
     scores = model.evaluate(X[test], Y[test], verbose=0, batch_size=batch_size)
@@ -196,18 +185,16 @@ print('Sanity checks on cvpreds:')
 print('Same length as Y ?', len(cvpreds) == len(Y))
 print('Any dummy 0.0 still in cvpreds?', 0.0 in cvpreds)
 
-print('Example output cvpreds/Yguess vs. Y:')
-# Yguess = (cvpreds > 0.5).astype(np.int)
 Yguess = cvpreds
 
-print('Yguess')
-print(Yguess[:30])
-print('Y')
-print(Y[:30])
+# Removing predictions for the Espresso samples using idx_espresso
+print('len(Yguess) including Espresso:', len(Yguess))
+Yguess_final = np.delete(Yguess, idx_espresso)
+print('len(Yguess_final) without Espresso:', len(Yguess_final))
 
 # Turning to scipy
 print('Turning to scipy:')
-Ycnn = csr_matrix.transpose(csr_matrix(Yguess))
+Ycnn = csr_matrix.transpose(csr_matrix(Yguess_final))
 print(type(Ycnn))
 print(Ycnn.shape)
 # print(Ycnn)
@@ -220,43 +207,3 @@ save_to.close()
 print('Done')
 
 
-
-# print("CNN:")
-# # # y_proba = model.predict(X)
-# Yguess = (Yguess > 0.5).astype(np.int)
-# # print(Y_classes)
-#
-# # df = pd.DataFrame(Y_classes)
-# # df.to_csv('pred.csv')
-#
-# print(classification_report(Y, Yguess))
-# print('Accuracy:', accuracy_score(Y, Yguess))
-# print('Confusion matrix:')
-# print(confusion_matrix(Y, Yguess))
-
-
-#
-# #######################################################
-# # turn predictions into percentages!
-# #########
-# '''
-# Setting up model trained on X,Y, i.e. training set for meta classifier
-# '''
-# print('Training model on full set of X...')
-# # create model
-# model = Model(model_input, model_output)
-# # Compile model
-# model.compile(loss="binary_crossentropy", optimizer="adam", metrics=["accuracy"])
-# # Initialize weights with word2vec
-# if model_type == "CNN-non-static":
-#     weights = np.array([v for v in embedding_weights.values()])
-#     print("Initializing embedding layer with word2vec weights, shape", weights.shape)
-#     embedding_layer = model.get_layer("embedding")
-#     embedding_layer.set_weights([weights])
-#
-# # Fit the model
-# print('Fitting...')
-# model.fit(X, Y, epochs=num_epochs, batch_size=10, verbose=0)
-# print('Done')
-
-# pickle both model and all predictions!

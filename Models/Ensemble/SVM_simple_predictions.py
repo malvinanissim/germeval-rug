@@ -43,29 +43,16 @@ def read_corpus(corpus_file, binary=True):
 
     return tweets, labels
 
-def read_corpus_binary(pos_file, neg_file, pos_label, neg_label):
-    '''Reading in data from 2 files, containing the positive and the negative training samples
-    Order: All positive samples first, then all negative samples'''
 
-    X, Y = [],[]
-    # Getting all positive samples
-    with open(pos_file, 'r', encoding='utf-8') as fpos:
-        for line in fpos:
-            assert len(line) > 0, 'Empty line found!'
-            X.append(line.strip())
-            Y.append(pos_label)
-    # Getting all negative samples
-    with open(neg_file, 'r', encoding='utf-8') as fneg:
-        for line in fneg:
-            assert len(line) > 0, 'Empty line found!'
-            X.append(line.strip())
-            Y.append(neg_label)
+def read_test(path_to_file):
+    '''Reading in the real test data, with no labels'''
 
-    print('len(X):', len(X))
-    print('len(Y):', len(Y))
-
-    return X, Y
-
+    Xtest = []
+    with open(path_to_file, 'r', encoding='utf-8') as fi:
+        for line in fi:
+            if line.strip() != '':
+                Xtest.append(line.strip())
+    return Xtest
 
 
 def load_embeddings(embedding_file):
@@ -93,23 +80,17 @@ def load_embeddings(embedding_file):
 
 if __name__ == '__main__':
 
-    # load training data set
-    # pos_path = '../../Data/offense.train.txt'
-    # neg_path = '../../Data/other.train.txt'
+    print('Reading in train and test data...')
 
-    Xtrain, Ytrain = read_corpus('../../Data/germeval.ensemble.train.txt')
+    Xtrain, Ytrain = read_corpus('../Data/germeval2018.training.txt')
     assert len(Xtrain) == len(Ytrain), 'Unequal length for Xtrain and Ytrain!'
     print('{} train samples'.format(len(Xtrain)))
 
-    # load testing data set
-    # pos_path = '../../Data/offense.test.txt'
-    # neg_path = '../../Data/other.test.txt'
 
-    Xtest, Ytest = read_corpus('../../Data/germeval.ensemble.test.txt')
-    assert len(Xtest) == len(Ytest), 'Unequal length for Xtest and Ytest!'
+    Xtest = read_test('../Data/germeval2018.test.txt')
+    # assert len(Xtest) == len(Ytest), 'Unequal length for Xtest and Ytest!'
     print('{} test samples'.format(len(Xtest)))
 
-    # Xtrain, Ytrain = Xtrain[:60], Ytrain[:60]
 
     # Vectorizing data / Extracting feature
     # unweighted word uni and bigrams
@@ -118,7 +99,7 @@ if __name__ == '__main__':
 
     # Getting twitter embeddings
     path_to_embs = '../../Resources/test_embeddings.json'
-    # path_to_embs = '../embeddings/twitter_de_52D.p'
+    # path_to_embs = '../embeddings/model_reset_random.bin'
     print('Getting pretrained word embeddings from {}...'.format(path_to_embs))
     embeddings, _ = load_embeddings(path_to_embs)
     print('Done')
@@ -146,6 +127,6 @@ if __name__ == '__main__':
     print(Ysvm)
 
     # Pickling the predictions
-    save_to = open('NEW-test-svm-predict.p', 'wb')
+    save_to = open('TEST-svm.p', 'wb')
     pickle.dump(Ysvm, save_to)
     save_to.close()
