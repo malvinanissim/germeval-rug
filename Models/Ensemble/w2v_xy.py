@@ -20,7 +20,7 @@ def train_word2vec(sentence_matrix, vocabulary_inv,
     context         # Context window size
     """
     model_dir = '/home/xiaoyu/Documents/Groningen/HS_Detection/germeval-rug/Resources'
-    model_name = "hate_german.bin".format(num_features, min_word_count, context)
+    model_name = "hate_german_300.bin".format(num_features, min_word_count, context)
     model_name = join(model_dir, model_name)
     if exists(model_name):
         embedding_model = word2vec.Word2Vec.load(model_name)

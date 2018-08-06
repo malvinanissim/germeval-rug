@@ -7,8 +7,8 @@ import pickle
 """
 Original taken from https://github.com/dennybritz/cnn-text-classification-tf
 
-When working with 1 dataset only, call load_data()
-When working with 2 datasets, 1 train and 1 test, call load_data() to get train, load_data_test() to get test
+This script assumes that we have a fixed train and a fixed test set.
+The data loading method assumes that there are labels available for the fixed test set (for evaluation).
 
 """
 
@@ -27,8 +27,8 @@ def clean_str(string):
 
 def load_data_and_labels():
     """
-    Loads MR polarity data from files, splits the data into words and generates labels.
-    Returns split sentences and labels.
+    Loading both the train and the  test set.
+    Adding the espresso dataset to train
     """
     # Load train data from files
     samples, labels = [],[]
@@ -79,8 +79,8 @@ def load_data_and_labels():
 
 def add_espresso_data(Xorig, Yorig):
     """
-    Loads the espresso dataset, randomly inserts them into orig_dataset
-    Order of samples in orig_dataset is preserved.
+    Loads the espresso dataset, randomly inserts them into the original dataset (Xorig, Yorig)
+    Order of samples in original dataset is preserved.
     Returns: a) dataset (X, Y) extended with  espresso data, b) indices of espresso data samples in new dataset
     (later on predictions for espresso items can be removed via these indices)
     """
