@@ -5,7 +5,7 @@
 
 # Citation
 If you find any of these pre-trained models useful, please cite the following papers: 
-- [RuG at GermEval: Detecting Offensive Speech in German Social Media]()
+- [RuG at GermEval: Detecting Offensive Speech in German Social Media](https://github.com/malvinanissim/germeval-rug/blob/master/rug-germeval-paper.pdf)
 ```
 @InProceedings{RUG@Evalita2018,
   author    = {Xiaoyu Bai and Flavio Merenda and Claudia Zaghi and Tommaso Caselli and Malvina Nissim},
