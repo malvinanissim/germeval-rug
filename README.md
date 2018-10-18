@@ -4,16 +4,13 @@ Repository of the [RuG Team](https://sites.google.com/view/sms-rug) @ Germeval 2
 
 Structure of the repository:
 
-- the Data folder contains the training data from the organizers. Files with FB refers to the Facebook data, files with TW refers to the Twitter dataset. Test data are currently available at [this link](https://docs.google.com/forms/d/e/1FAIpQLSeJXpDygWFeiFxldm2J0OuNyQBp5yDxlAgc7200fnycaEyU2A/viewform). The files marked with "ensamble" are used to obaine the cross-fold prediction from the CNN and the SVM models to train the meta-classifier (Logistic Regressor) for the Ensamble models. The embeddings folder contains only the .bin file of the Italian Hate Embeddings obtaine using the skip-gram model from word2vec. To run the models you need to download [this file](https://drive.google.com/drive/folders/133EPm4mO9dN6A0Cw6A6Sx1ABa-25BI8e?usp=sharing).  
+- the Data folder contains the training data from the organizers as well as the additional data we used for training, drawn from the German section of the [Political Speech Project](https://rania.shinyapps.io/PoliticalSpeechProject/), called "espresso data" here. Use either all of the German espresso data or only the ones labelled as offensive. The extra data are available as pickled Python objects. With respect to the shared task data by the organizers, the folder contains the official training, testing data and a small sample dataset not used in the actual task ("germeval2018.training.txt", "germeval2018.test.txt" and "germeval2018.sample.txt"). For validation of models, the official training data has been given a 80%/20%-train/dev-split, respectively called "germeval.ensemble.train.txt" and "germeval.ensemble.test.txt".
 
-- the Models folder contains the script to train the models and apply them on the test data. For the SVM and CNN models, we have 4 different models, sharing the same features, but differntiating only for the train and test data they are using. To run the model, please change the paths for file inputs and word embeddings. Foer the CNN models, the input files are specified in the data_helpers scripts, and the embeddings path is in the w2v.py files.  
+- The embeddings folder contains only the .bin file of the Italian Hate Embeddings obtaine using the skip-gram model from word2vec. To run the models you need to download [this file](https://drive.google.com/drive/folders/133EPm4mO9dN6A0Cw6A6Sx1ABa-25BI8e?usp=sharing).  
 
-- the Results folder contains the output of the trained models (CNN, SVM, ensamble) over the trainig data, following the three subtasks:
-   
-   1) Train: Facebook - Test: Facebook (files with FB-FB or FB only in their names)
-   2) Train: Twitter - Test: Twitter (files with TW-TW or TW only in their names)
-   3) Train Facebook - Test: Twitter (files with FB-TW in thei names)
-   4) Train: Twitter - Test: Facebook (files with TW-FB
+- the Models folder contains the script to train the models and apply them on the test data. To run the model, please change the paths for file inputs and word embeddings. For the CNN models, the input files are specified in the data_helpers scripts, and the embeddings path is in the w2v.py files.  
+
+- the Results folder contains COMING SOON
    
  - The Submissions-Haspeede folde contains the submissions to all subtasks of the Haspeede Task. Files ending with *run1* correspond to the SVM predictions, files ending with *run3* correspond to the Ensemble model predictions.
 
