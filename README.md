@@ -4,11 +4,13 @@ Repository of the [RuG Team](https://sites.google.com/view/sms-rug) @ Germeval 2
 
 Structure of the repository:
 
-- the Data folder contains the training data from the organizers as well as the additional data we used for training, drawn from the German section of the [Political Speech Project](https://rania.shinyapps.io/PoliticalSpeechProject/), called "espresso data" here. Use either all of the German espresso data or only the ones labelled as offensive. The extra data are available as pickled Python objects. With respect to the shared task data by the organizers, the folder contains the official training, testing data and a small sample dataset not used in the actual task ("germeval2018.training.txt", "germeval2018.test.txt" and "germeval2018.sample.txt"). For validation of models, the official training data has been given a 80%/20%-train/dev-split, respectively called "germeval.ensemble.train.txt" and "germeval.ensemble.test.txt".
+- the Data folder contains the training data from the organizers as well as the additional data we used for training, drawn from the German section of the [Political Speech Project](https://rania.shinyapps.io/PoliticalSpeechProject/), called "espresso data" here. Use either all of the German espresso data or only the ones labelled as offensive. The extra data are available as pickled Python objects. With respect to the shared task data by the organizers, the folder contains the official training, testing data and a small sample dataset not used in the actual task ("germeval2018.training.txt", "germeval2018.test.txt" and "germeval2018.sample.txt"). For validation of models, the official training data has been given a 80%/20%-train/dev-split, respectively called "germeval.ensemble.train.txt" and "germeval.ensemble.test.txt". To run our models, you will also need to download our "hate-oriented" word embeddings (Link to embeddings coming soon...)
 
-- The embeddings folder contains only the .bin file of the Italian Hate Embeddings obtaine using the skip-gram model from word2vec. To run the models you need to download [this file](https://drive.google.com/drive/folders/133EPm4mO9dN6A0Cw6A6Sx1ABa-25BI8e?usp=sharing).  
+- the Models folder contains the scripts to train the models
+   * Baseline: This contains our baselines models (majority class and linear SVM with Tfidf-weighted word unigrams), for comparison only.
+   * SVM: Our SVM model. 
 
-- the Models folder contains the script to train the models and apply them on the test data. To run the model, please change the paths for file inputs and word embeddings. For the CNN models, the input files are specified in the data_helpers scripts, and the embeddings path is in the w2v.py files.  
+and apply them on the test data. To run the model, please change the paths for file inputs and word embeddings. For the CNN models, the input files are specified in the data_helpers scripts, and the embeddings path is in the w2v.py files.  
 
 - the Results folder contains COMING SOON
    
