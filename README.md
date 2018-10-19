@@ -8,21 +8,21 @@ Structure of the repository:
 
 - the Models folder contains the scripts to train the models
    * Baseline: This contains our baselines models (majority class and linear SVM with Tfidf-weighted word unigrams), for comparison only.
-   * SVM: Our SVM model. 
+   * SVM: Our SVM models. "SVM_final_runs.py" trains on a training dataset and outputs predictions for a given test dataset. To run it please change the paths for the input data accordingly. The offensive terms in "lexicon.txt" were copied from [this website](http://www.hyperhero.com/de/insults.htm).
+   * CNN: Our CNN model. The input data files are to be specified in the "load_data_and_labels()" function in the "data_helpers.py" script, and the embeddings path is in the w2v_xy.py files. Run "CNN_get_dev.py" to train on the training data (specified in data_helpers) and evaluate on the test data.
+   * Ensemble: Our Ensemble model. See below for instruction on how to run them.   
 
-and apply them on the test data. To run the model, please change the paths for file inputs and word embeddings. For the CNN models, the input files are specified in the data_helpers scripts, and the embeddings path is in the w2v.py files.  
+- the Resources folder contains scripts we used to concatenate different sets of word embeddings. These were not included in our final submissions to the shared task  
 
 - the Results folder contains COMING SOON
    
- - The Submissions-Haspeede folde contains the submissions to all subtasks of the Haspeede Task. Files ending with *run1* correspond to the SVM predictions, files ending with *run3* correspond to the Ensemble model predictions.
+- the Submissions folder contains the 4 runs we submitted to the shared task (and the Perl evaluation script provided by the organizers). Those marked "coarse" deal with the binary classification task (OFFENSE vs. NONE), the single one marked with "fine" deals with the 4-class task (INSULT, PROFANITY, ABUSE, NONE).
 
-Replicating the experiments for the CNN and SVM models is straighforward: modify the path for of the train and test data, of the embeddings (do not forget to [download the embedding file](https://drive.google.com/drive/folders/133EPm4mO9dN6A0Cw6A6Sx1ABa-25BI8e?usp=sharing)), and run the scripts. 
-For the Ensamble models you shoudl follow this stesps:
-- Run the CNN and SVM cross-prediction scripts first. They will output predictions of the CNN and SVM over the trainig data. The output is stored in pickle files (names starting with  "NEW-Train")
+To run the Ensemble model you should follow these steps:
+- Run the CNN and SVM cross-prediction scripts first. They will output predictions of the CNN and SVM over the trainig data. The output is stored in pickle files (names starting with  "NEW-train")
 - Run the CNN and SVM single prediction scripts. They will output the predictions of the CNN and SVM over the test data. The output is stored in pickle files (names starting with "TEST")
-- Run the ensamble.py script
+- Run the ensemble.py script which reads in the CNN and SVM predictions, then trains and tests the logistic regression meta-classifier.
 
-The ensemble model benefits from 2 extra features: lenght of the text and presence of offensive/hate words. The list of offensive/hate words is stored in the file *lexicon_deMauro.txt*. The file contains stemmed entries obtained from these two resources: *[Le parole per ferire](https://www.internazionale.it/opinione/tullio-de-mauro/2016/09/27/razzismo-parole-ferire)* and [Wikitionary](https://it.wiktionary.org/wiki/Categoria:Parole_volgari-IT).
 
 All scripts are based on Python 3.5 / 3.6. CNN uses Keras 2.2.0 and can be run with Tensorflow 1.8.0 as backend.
 
