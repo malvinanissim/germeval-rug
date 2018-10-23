@@ -4,7 +4,7 @@ Repository of the [RuG Team](https://sites.google.com/view/sms-rug) @ Germeval 2
 
 Structure of the repository:
 
-- the Data folder contains the training data from the organizers as well as the additional data we used for training, drawn from the German section of the [Political Speech Project](https://rania.shinyapps.io/PoliticalSpeechProject/), called "espresso data" here. Use either all of the German espresso data or only the ones labelled as offensive. The extra data are available as pickled Python objects. With respect to the shared task data by the organizers, the folder contains the official training, testing data and a small sample dataset not used in the actual task ("germeval2018.training.txt", "germeval2018.test.txt" and "germeval2018.sample.txt"). For validation of models, the official training data has been given a 80%/20%-train/dev-split, respectively called "germeval.ensemble.train.txt" and "germeval.ensemble.test.txt". To run our models, you will also need to download our "hate-oriented" word embeddings (Link to embeddings coming soon...)
+- the Data folder contains the training data from the organizers as well as the additional data we used for training, drawn from the German section of the [Political Speech Project](https://rania.shinyapps.io/PoliticalSpeechProject/), called "espresso data" here. Use either all of the German espresso data or only the ones labelled as offensive. The extra data are available as pickled Python objects. With respect to the shared task data by the organizers, the folder contains the official training, testing data and a small sample dataset not used in the actual task ("germeval2018.training.txt", "germeval2018.test.txt" and "germeval2018.sample.txt"). For validation of models, the official training data has been given a 80%/20%-train/dev-split, respectively called "germeval.ensemble.train.txt" and "germeval.ensemble.test.txt". To run our models, you will also need to download our "hate-oriented"/"hate-enriched" word embeddings (Link to embeddings coming soon...)
 
 - the Models folder contains the scripts to train the models
    * Baseline: This contains our baselines models (majority class and linear SVM with Tfidf-weighted word unigrams), for comparison only.
@@ -14,7 +14,7 @@ Structure of the repository:
 
 - the Resources folder contains scripts we used to concatenate different sets of word embeddings. These were not included in our final submissions to the shared task  
 
-- the Results folder contains COMING SOON
+- the Results folder contains the results of some of our experimental results obtained on a randomly chosen dev set. They show how different sets of word embeddings, including our hate-oriented ones, perform in combination with the linear SVM model. 
    
 - the Submissions folder contains the 4 runs we submitted to the shared task (and the Perl evaluation script provided by the organizers). Those marked "coarse" deal with the binary classification task (OFFENSE vs. NONE), the single one marked with "fine" deals with the 4-class task (INSULT, PROFANITY, ABUSE, NONE).
 
